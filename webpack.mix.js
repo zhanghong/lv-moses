@@ -66,6 +66,18 @@ if (mix.inProduction()) {
   // Development settings
   mix
     .sourceMaps()
+    .browserSync({
+      proxy: process.env.MIX_SENTRY_DSN_PUBLIC
+      // host: '192.168.240.1',
+      // proxy: 'localhost:8000',
+      // port: 8001,
+      // ui: {
+      //   host: '192.168.240.1',
+      //   port: 8002
+      // }
+      // proxy: 'localhost:8000'
+      // proxy: 'my-domain.test'
+    })
     .webpackConfig({
       devtool: 'cheap-eval-source-map', // Fastest for development
     });
