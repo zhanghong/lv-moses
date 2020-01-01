@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Laravue\Models\Role;
-use App\Laravue\Models\Permission;
+use App\Models\User\User;
+use App\Models\Role\Role;
+use App\Models\Role\Permission;
 use App\Laravue\Acl;
 
 class SetupRolePermissions extends Migration
@@ -44,8 +45,7 @@ class SetupRolePermissions extends Migration
         ]);
 
         foreach (Acl::roles() as $role) {
-            /** @var \App\User[] $users */
-            $users = \App\Laravue\Models\User::where('role', $role)->get();
+            $users = User::where('role', $role)->get();
             $role = Role::findByName($role);
             foreach ($users as $user) {
                 $user->syncRoles($role);
@@ -70,8 +70,7 @@ class SetupRolePermissions extends Migration
             });
         }
 
-        /** @var \App\User[] $users */
-        $users = \App\Laravue\Models\User::all();
+        $users = User::all();
         foreach ($users as $user) {
             $roles = array_reverse(Acl::roles());
             foreach ($roles as $role) {

@@ -175,6 +175,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // 多态关联 morph 映射
+        App\Providers\RelationMapServiceProvider::class,
     ],
 
     /*

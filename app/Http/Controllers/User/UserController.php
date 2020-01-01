@@ -1,32 +1,26 @@
 <?php
-/**
- * File UserController.php
- *
- * @author Tuan Duong <bacduong@gmail.com>
- * @package Laravue
- * @version 1.0
- */
+namespace App\Http\Controllers\User;
 
-namespace App\Http\Controllers;
-
-use App\Http\Resources\PermissionResource;
-use App\Http\Resources\UserResource;
-use App\Laravue\JsonResponse;
-use App\Laravue\Models\Permission;
-use App\Laravue\Models\Role;
-use App\Laravue\Models\User;
+use Validator;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
-use Validator;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+
+use App\Laravue\JsonResponse;
+use App\Models\User\User;
+use App\Models\Role\Role;
+use App\Models\Role\Permission;
+use App\Http\Resources\User\UserResource;
+use App\Http\Resources\Role\PermissionResource;
+use App\Http\Controllers\Controller as BaseController;
 
 /**
  * Class UserController
  *
- * @package App\Http\Controllers
+ * @package App\Http\Controllers\User
  */
-class UserController extends Controller
+class UserController extends BaseController
 {
     const ITEM_PER_PAGE = 15;
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Laravue\Models\User;
+use App\Models\User\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;

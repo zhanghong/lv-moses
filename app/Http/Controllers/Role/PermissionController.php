@@ -1,23 +1,12 @@
 <?php
-/**
- * File PermissionController.php
- *
- * @author Tuan Duong <bacduong@gmail.com>
- * @package Laravue
- * @version 1.0
- */
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Role;
 
-use App\Http\Resources\PermissionResource;
 use Illuminate\Http\Request;
-use App\Laravue\Models\Permission;
+use App\Models\Role\Permission;
+use App\Http\Resources\Role\PermissionResource;
+use App\Http\Controllers\Controller as BaseController;
 
-/**
- * Class PermissionController
- *
- * @package App\Http\Controllers
- */
-class PermissionController extends Controller
+class PermissionController extends BaseController
 {
     /**
      * Display a listing of the resource.
