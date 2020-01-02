@@ -14,6 +14,7 @@ class CreateShopBrandsTable extends Migration
     public function up()
     {
         Schema::create('shop_brands', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('editor_id')->default(0)->nullable(false)->comment('更新用户ID');
             $table->unsignedBigInteger('shop_id')->default(0)->nullable(false)->comment('店铺ID');
             $table->string('name')->default('')->limit(50)->nullable(false)->comment('名称');

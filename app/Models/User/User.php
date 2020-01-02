@@ -2,6 +2,7 @@
 
 namespace App\Models\User;
 
+use Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
@@ -33,6 +34,19 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public static function currentUser()
+    {
+        return Auth::user();
+    }
+
+    public static function currentUserId()
+    {
+        if (Auth::id()) {
+            return Auth::id();
+        }
+        return 0;
     }
 
     public function isAdmin(): bool

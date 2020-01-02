@@ -23,4 +23,5 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('roles/{role}/permissions', 'Role\RoleController@permissions')->middleware('permission:' . \App\Laravue\Acl::PERMISSION_PERMISSION_MANAGE);
     Route::apiResource('permissions', 'Role\PermissionController')->middleware('permission:' . \App\Laravue\Acl::PERMISSION_PERMISSION_MANAGE);
 
+    Route::apiResource('shops/{shop}/brands', 'Shop\BrandController');
 });
