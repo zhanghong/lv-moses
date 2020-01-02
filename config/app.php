@@ -177,6 +177,8 @@ return [
 
         // 多态关联 morph 映射
         App\Providers\RelationMapServiceProvider::class,
+        // spatie/laravel-permission
+        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*
