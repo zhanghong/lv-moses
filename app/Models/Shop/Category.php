@@ -38,20 +38,21 @@ class Category extends Model
         parent::boot();
         // 监听 Category 的创建事件，用于初始化 path 和 level 字段值
         static::saving(function (Category $category) {
+            $parent = $category->parent;
             // 如果创建的是一个根类目
-            if (empty($category->parent_id)) {
+            if (empty($parent)) {
                 // 将层级设为 0
                 $category->level = 0;
                 // 将 path 设为 -
                 $category->path  = '-';
             } else {
                 // 将层级设为父类目的层级 + 1
-                $category->level = $category->parent->level + 1;
+                $category->level = $parent->level + 1;
                 // 将 path 值设为父类目的 path 追加父类目 ID 以及最后跟上一个 - 分隔符
-                $category->path  = $category->parent->path.$category->parent_id.'-';
+                $category->path  = $parent->path.$parent->id.'-';
                 // 把Parent的is_directory更新为True
                 DB::table($category->getTable())
-                    ->where('id', $category->parent_id)
+                    ->where('id', $parent->id)
                     ->where('is_directory', 0)
                     ->update(['is_directory' => 1]);
             }

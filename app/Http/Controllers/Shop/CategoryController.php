@@ -33,7 +33,6 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, Shop $shop, Category $category)
     {
         $params = $this->filterRequestParams($request);
-        return $params;
         $category->fill($params);
         $category->save();
         return new CategoryResource($category);
@@ -55,6 +54,15 @@ class CategoryController extends Controller
             'is_enabled',
             'order'
         ];
-        return $request->only($allow_names);
+        $params = $request->only($allow_names);
+
+        $skip_names = ['parent_id', 'is_enabled', 'order'];
+        foreach ($skip_names as $key => $name) {
+            if (isset($params[$name]) && $params[$name] === '') {
+                // 使用数据库默认值或记录当前值
+                unset($params[$name]);
+            }
+        }
+        return $params;
     }
 }
