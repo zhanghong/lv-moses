@@ -17,10 +17,10 @@ class CreateShopConfigsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('editor_id')->default(0)->nullable(false)->comment('更新用户ID');
             $table->unsignedBigInteger('shop_id')->default(0)->nullable(false)->comment('店铺ID');
-            $table->string('seo_keywords')->default('')->limit(100)->comment('SEO 关键词');
-            $table->string('seo_description')->default('')->limit(255)->comment('SEO 描述');
-            $table->string('introduce')->default('')->limit(500)->comment('SEO 描述');
-            $table->string('banner_url')->default('')->limit(255)->comment('Banner图片URL');
+            $table->string('seo_keywords', 100)->default('')->comment('SEO 关键词');
+            $table->string('seo_description')->default('')->comment('SEO 描述');
+            $table->string('introduce', 500)->default('')->comment('SEO 描述');
+            $table->string('banner_url')->default('')->comment('Banner图片URL');
             $table->timestamps();
             $table->softDeletes();
         });

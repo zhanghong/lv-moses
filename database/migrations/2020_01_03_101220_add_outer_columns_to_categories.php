@@ -14,8 +14,8 @@ class AddOuterColumnsToCategories extends Migration
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->string('outer_name')->limit(6)->default('')->comment('来源名称');
-            $table->string('outer_key')->limit(10)->default('')->comment('来源主键');
+            $table->string('outer_name', 6)->default('')->comment('来源名称');
+            $table->string('outer_key', 10)->default('')->comment('来源主键');
         });
     }
 
