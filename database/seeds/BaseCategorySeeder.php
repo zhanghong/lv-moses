@@ -31,7 +31,7 @@ class BaseCategorySeeder extends Seeder
                     $category->parent_id = 0;
                 }
 
-                if ($category->wasRecentlyCreated) {
+                if (!$category->exists) {
                     // 新建的分类默认是可见的
                     $category->is_enabled = true;
                 }
