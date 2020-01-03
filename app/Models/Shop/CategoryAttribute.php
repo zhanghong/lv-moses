@@ -2,8 +2,7 @@
 
 namespace App\Models\Shop;
 
-use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Model;
 use App\Models\User\User;
 
 class CategoryAttribute extends Model

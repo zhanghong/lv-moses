@@ -27,5 +27,6 @@ Route::group(['middleware' => 'api'], function () {
         Route::apiResource('permissions', 'Role\PermissionController');
 
         Route::apiResource('shops/{shop}/brands', 'Shop\BrandController');
+        Route::apiResource('shops/{shop}/categories', 'Shop\CategoryController');
     });
 });

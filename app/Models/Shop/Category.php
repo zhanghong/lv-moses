@@ -2,9 +2,10 @@
 
 namespace App\Models\Shop;
 
-use Illuminate\Database\Eloquent\Model;
+use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\Model;
 use App\Models\User\User;
 use App\Models\Base\Category as BaseCategory;
 
@@ -15,6 +16,9 @@ class Category extends Model
     protected $table = 'shop_categories';
 
     protected $fillable = [
+        'shop_id',
+        'base_id',
+        'parent_id',
         'name',
         'icon_url',
         'is_directory',
@@ -33,7 +37,7 @@ class Category extends Model
     {
         parent::boot();
         // 监听 Category 的创建事件，用于初始化 path 和 level 字段值
-        static::creating(function (Category $category) {
+        static::saving(function (Category $category) {
             // 如果创建的是一个根类目
             if (empty($category->parent_id)) {
                 // 将层级设为 0
@@ -45,6 +49,11 @@ class Category extends Model
                 $category->level = $category->parent->level + 1;
                 // 将 path 值设为父类目的 path 追加父类目 ID 以及最后跟上一个 - 分隔符
                 $category->path  = $category->parent->path.$category->parent_id.'-';
+                // 把Parent的is_directory更新为True
+                DB::table($category->getTable())
+                    ->where('id', $category->parent_id)
+                    ->where('is_directory', 0)
+                    ->update(['is_directory' => 1]);
             }
         });
     }
@@ -61,7 +70,7 @@ class Category extends Model
 
     public function baseCategory()
     {
-        return $this->belongsTo(BaseCategory::class, 'category_id');
+        return $this->belongsTo(BaseCategory::class, 'base_category_id');
     }
 
     public function parent()

@@ -2,9 +2,9 @@
 
 namespace App\Models\Shop;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\Model;
 use App\Models\User\User;
 
 class Shop extends Model
@@ -54,7 +54,7 @@ class Shop extends Model
 
     public function categories()
     {
-        return $this->hasMany(Categories::class);
+        return $this->hasMany(Category::class);
     }
 
     /**

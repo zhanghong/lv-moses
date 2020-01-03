@@ -4,7 +4,6 @@ namespace App\Http\Requests\Shop;
 
 use Illuminate\Validation\Rule;
 use App\Http\Requests\FormRequest;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Validation\Validator;
 
 class BrandRequest extends FormRequest

@@ -3,9 +3,9 @@
 namespace App\Models\Base;
 
 use DB;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\Model;
 use App\Models\User\User;
 
 class Category extends Model
