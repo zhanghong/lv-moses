@@ -4,7 +4,6 @@ namespace App\Http\Requests\Shop;
 
 use Illuminate\Validation\Rule;
 use App\Http\Requests\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
 
 class BrandRequest extends FormRequest
 {
@@ -26,10 +25,12 @@ class BrandRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator) {
-        exit(json_encode(array(
-            'code' => 403,
-            'info' => $validator->getMessageBag()->first()
-        )));
+    public function attributes()
+    {
+        return [
+            'name' => '名称',
+            'logo_url' => 'Logo图片',
+            'description' => '品牌介绍',
+        ];
     }
 }

@@ -63,4 +63,16 @@ class CategoryRequest extends FormRequest
             ],
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'base_category_id' => '系统分类',
+            'name' => '分类名',
+            'parent_id' => '上级分类',
+            'icon_url' => '图标',
+            'order' => '排序编号',
+            'is_enabled' => '是否启用',
+        ];
+    }
 }
