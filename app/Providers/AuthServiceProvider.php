@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 namespace App\Providers;
 
@@ -25,6 +25,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // 使用 Gate::guessPolicyNamesUsing 方法来自定义策略文件的寻找逻辑
+        // Gate::guessPolicyNamesUsing(function ($class) {
+        //     $class = is_object($class) ? get_class($class) : $class;
+        //     $name = str_replace('\\Models\\', '\\Policies\\', $class);
+
+        //     return $name.'Policy';
+        // });
     }
 }
