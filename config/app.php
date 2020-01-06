@@ -28,6 +28,9 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    // 允许上传文件文件名后辍
+    'allow_exts' => env('UPLOAD_ALLOW_EXTS', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

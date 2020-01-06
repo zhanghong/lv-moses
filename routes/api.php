@@ -28,5 +28,8 @@ Route::group(['middleware' => 'api'], function () {
 
         Route::apiResource('shops/{shop}/brands', 'Shop\BrandController');
         Route::apiResource('shops/{shop}/categories', 'Shop\CategoryController');
+
+        Route::post('shops/{shop}/uploads', 'Shop\UploadController@store');
+        Route::get('shops/{shop}/uploads/{upload}', 'Shop\UploadController@show');
     });
 });
