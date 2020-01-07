@@ -4,9 +4,11 @@ namespace App\Models\Shop;
 
 use Image;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 use App\Models\Model;
 use App\Models\User\User;
+use App\Exceptions\InvalidParameterException;
 
 class Upload extends Model
 {
@@ -198,6 +200,141 @@ class Upload extends Model
         }
 
         return $upload;
+    }
+
+    /**
+     * 追加多态关联记录
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-07
+     * @param    EloquentModel      $attachable  关联实例
+     * @param    string             $attach_type 附件类型
+     * @param    array/int          $ids         附件ID
+     * @return   int
+     */
+    public static function morphAdd(EloquentModel $attachable, string $attach_type, $ids)
+    {
+        if (!$attachable) {
+            throw new InvalidParameterException('关联记录不能为空');
+        }
+
+        if (!$attach_type) {
+            throw new InvalidParameterException('上传文件类型不能为空');
+        }
+
+        if (empty($ids)) {
+            throw new InvalidParameterException('上传文件ID不能为空');
+        }
+
+        $data = [
+            'attachable_type' => $attachable->getMorphClass(),
+            'attachable_id' => $attachable->id,
+            'attach_type' => $attach_type,
+        ];
+
+        if (is_array($ids)) {
+            $query = static::whereIn('id', $ids);
+        } else {
+            $query = static::where('id', intval($ids));
+        }
+
+        return $query->update($data);
+    }
+
+    /**
+     * 设置多态关联记录
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-07
+     * @param    EloquentModel      $attachable  关联实例
+     * @param    string             $attach_type 附件类型
+     * @param    array/int          $ids         附件ID
+     * @return   array
+     */
+    public static function morphSet(EloquentModel $attachable, string $attach_type, $ids)
+    {
+        if (!$attachable) {
+            throw new InvalidParameterException('关联记录不能为空');
+        }
+
+        if (!$attach_type) {
+            throw new InvalidParameterException('上传文件类型不能为空');
+        }
+
+        if (empty($ids)) {
+            throw new InvalidParameterException('上传文件ID不能为空');
+        }
+
+        if (is_array($ids)) {
+            $update_query = static::whereIn('id', $ids);
+            $delete_query = static::whereNotIn('id', $ids);
+        } else {
+            $id = intval($ids);
+            $update_query = static::where('id', $id);
+            $delete_query = static::where('id', '<>', intval($ids));
+        }
+
+        $data = [
+            'attachable_type' => $attachable->getMorphClass(),
+            'attachable_id' => $attachable->id,
+            'attach_type' => $attach_type,
+        ];
+
+        $update_count = $update_query->update($data);
+        foreach ($data as $name => $text) {
+            $delete_query = $delete_query->where($name, $text);
+        }
+
+        $uploads = $delete_query->get();
+        foreach ($uploads as $idx => $upload) {
+            $upload->delete();
+        }
+
+        return ['update' => $update_count, 'delete' => $uploads->count()];
+    }
+
+    /**
+     * 解除多态关联记录
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-07
+     * @param    EloquentModel      $attachable  关联实例
+     * @param    string             $attach_type 附件类型
+     * @param    array/int          $ids         附件ID
+     * @return   int
+     */
+    public static function morphRm(EloquentModel $attachable, string $attach_type, $ids)
+    {
+        if (!$attachable) {
+            throw new InvalidParameterException('关联记录不能为空');
+        }
+
+        if (!$attach_type) {
+            throw new InvalidParameterException('上传文件类型不能为空');
+        }
+
+        if (empty($ids)) {
+            throw new InvalidParameterException('上传文件ID不能为空');
+        }
+
+        if (is_array($ids)) {
+            $query = static::whereIn('id', $ids);
+        } else {
+            $query = static::where('id', intval($ids));
+        }
+
+        $data = [
+            'attachable_type' => $attachable->getMorphClass(),
+            'attachable_id' => $attachable->id,
+            'attach_type' => $attach_type,
+        ];
+        foreach ($data as $name => $text) {
+            $query = $query->where($name, $text);
+        }
+
+        $uploads = $query->get();
+        foreach ($uploads as $idx => $upload) {
+            $upload->delete();
+        }
+
+        return $uploads->count();
     }
 
     /**
