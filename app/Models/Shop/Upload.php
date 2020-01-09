@@ -338,6 +338,67 @@ class Upload extends Model
     }
 
     /**
+     * 查询记录关联的最新一条记录
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-07
+     * @param    EloquentModel      $attachable  关联实例
+     * @param    string             $attach_type 附件类型
+     * @param    int                $id          附件ID
+     * @return   Upload
+     */
+    public static function morphFind(EloquentModel $attachable, string $attach_type, $id = NULL) {
+        if (!$attachable) {
+            throw new InvalidParameterException('关联记录不能为空');
+        }
+
+        if (!$attach_type) {
+            throw new InvalidParameterException('上传文件类型不能为空');
+        }
+
+        $conditions = [
+            'attachable_type' => $attachable->getMorphClass(),
+            'attachable_id' => $attachable->id,
+            'attach_type' => $attach_type,
+        ];
+        if ($id) {
+            $conditions['id'] = intval($id);
+        }
+
+        return static::where($conditions)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+    }
+
+    /**
+     * 查询记录关联的所有记录
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-07
+     * @param    EloquentModel      $attachable  关联实例
+     * @param    string             $attach_type 附件类型
+     * @return   Upload
+     */
+    public static function morphGet(EloquentModel $attachable, string $attach_type) {
+        if (!$attachable) {
+            throw new InvalidParameterException('关联记录不能为空');
+        }
+
+        if (!$attach_type) {
+            throw new InvalidParameterException('上传文件类型不能为空');
+        }
+
+        $conditions = [
+            'attachable_type' => $attachable->getMorphClass(),
+            'attachable_id' => $attachable->id,
+            'attach_type' => $attach_type,
+        ];
+
+        return static::where($conditions)
+                    ->orderBy('order', 'DESC')
+                    ->orderBy('id', 'ASC')
+                    ->get();
+    }
+
+    /**
      * 图片的URL路径
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-06

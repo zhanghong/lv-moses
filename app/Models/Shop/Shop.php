@@ -2,14 +2,18 @@
 
 namespace App\Models\Shop;
 
+use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
 use App\Models\User\User;
+use App\Exceptions\DisallowException;
 
 class Shop extends Model
 {
     use SoftDeletes;
+
+    public const UPLOAD_IMAGE_COVER = 'cover';
 
     protected $table = 'shops';
 
@@ -100,5 +104,42 @@ class Shop extends Model
         Config::updateOrCreate(['shop_id' => $shop->id], $configData);
 
         return true;
+    }
+
+    /**
+     * 更新店铺信息
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-07
+     * @param    array              $params 更新数据
+     * @return   Shop
+     */
+    public function updateInfo(array $params)
+    {
+        if (!$this->is_allow_update) {
+            throw new DisallowException('店铺信息不允许更新');
+        }
+
+        $fields = [
+            ['name' => 'manager_id', 'type' => 'int'],
+            ['name' => 'name', 'type' => 'string'],
+            ['name' => 'main_image_url', 'type' => 'string', 'default' => ''],
+            ['name' => 'order', 'type' => 'int', 'default' => 0],
+            ['name' => 'is_enabled', 'type' => 'bool'],
+        ];
+        $data = static::filterFieldParams($fields, $params);
+
+        if (isset($params['main_image_id']) && $params['main_image_id']) {
+            $upload = Upload::morphFind($this, static::UPLOAD_IMAGE_COVER, $params['main_image_id']);
+            if ($upload) {
+                $data['main_image_url'] = $upload->file_path;
+            }
+        }
+
+        DB::transaction(function () {
+            $this->update($data);
+            Config::updateOrCreateByShop($params, $this);
+        });
+
+        return $this;
     }
 }
