@@ -27,6 +27,7 @@ class Upload extends Model
         'attach_type',
         'attachable_type',
         'attachable_id',
+        'attachable',
     ];
 
     public function creator()
@@ -173,13 +174,6 @@ class Upload extends Model
             'file_path' => "/$folder_name/$filename",
         ];
 
-        $clones = ['attachable_type', 'attachable_id;'];
-        foreach ($clones as $key => $name) {
-            if (isset($options[$name])) {
-                $data[$name] = $options[$name];
-            }
-        }
-
         if(strpos($data['mime_type'], 'image') === 0){
             $image = Image::make($local_name);
             $data['is_image'] = true;
@@ -192,6 +186,10 @@ class Upload extends Model
         }
 
         $upload = new static($data);
+        if (isset($options['attachable'])) {
+            $upload->attachable()->associate($options['attachable']);
+            $upload->save();
+        }
         $upload->save();
 
         if(isset($options['max_width'])){
@@ -277,6 +275,7 @@ class Upload extends Model
             'attachable_id' => $attachable->id,
             'attach_type' => $attach_type,
         ];
+        // dd($data);
 
         $update_count = $update_query->update($data);
         foreach ($data as $name => $text) {
@@ -338,6 +337,53 @@ class Upload extends Model
     }
 
     /**
+     * 查询店铺指定类型最新一条附件记录
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-13
+     * @param    int                $shop_id     店铺ID
+     * @param    string             $attach_type 附件类型
+     * @param    int                $id          附件ID
+     * @return   Upload
+     */
+    public static function shopFind(int $shop_id, string $attach_type, $id = NULL) {
+        $conditions = [
+            'shop_id' => $shop_id,
+            'attach_type' => $attach_type,
+        ];
+        if ($id) {
+            $conditions['id'] = intval($id);
+        }
+
+        return static::where($conditions)
+                    ->orderBy('id', 'DESC')
+                    ->first();
+    }
+
+    /**
+     * 查询店铺指定类型附件列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-13
+     * @param    int                $shop_id     店铺ID
+     * @param    string             $attach_type 附件类型
+     * @param    int                $id          附件ID
+     * @return   Collection
+     */
+    public static function shopGet(int $shop_id, string $attach_type, $id = NULL) {
+        $conditions = [
+            'shop_id' => $shop_id,
+            'attach_type' => $attach_type,
+        ];
+        if ($id) {
+            $conditions['id'] = intval($id);
+        }
+
+        return static::where($conditions)
+                    ->orderBy('order', 'DESC')
+                    ->orderBy('id', 'ASC')
+                    ->get();
+    }
+
+    /**
      * 查询记录关联的最新一条记录
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-07
@@ -375,7 +421,7 @@ class Upload extends Model
      * @DateTime 2020-01-07
      * @param    EloquentModel      $attachable  关联实例
      * @param    string             $attach_type 附件类型
-     * @return   Upload
+     * @return   Collection
      */
     public static function morphGet(EloquentModel $attachable, string $attach_type) {
         if (!$attachable) {

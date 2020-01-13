@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Shop;
 
+use Illuminate\Validation\Rule;
 use App\Http\Requests\FormRequest;
 
 class ConfigRequest extends FormRequest
@@ -14,7 +15,7 @@ class ConfigRequest extends FormRequest
                 'min:2',
                 'max:20',
                 Rule::unique('shops')->where(function ($query) {
-                    return $query->where('shop_id', '<>', $this->route('shop')->id)->whereNull('deleted_at');
+                    return $query->where('id', '<>', $this->route('shop')->id)->whereNull('deleted_at');
                 }),
             ],
             'order' => ['integer', 'min:0'],

@@ -14,10 +14,7 @@ class Model extends EloquentModel
      */
     public function getIsAllowUpdateAttribute()
     {
-        if (!$this->is_allow_update) {
-            return false;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -28,6 +25,9 @@ class Model extends EloquentModel
      */
     public function getCanUpdateAttribute()
     {
+        if (!$this->is_allow_update) {
+            return false;
+        }
         return true;
     }
 
@@ -56,7 +56,7 @@ class Model extends EloquentModel
      */
     public function getIsAllowDeleteAttribute()
     {
-        return false;
+        return true;
     }
 
     /**
