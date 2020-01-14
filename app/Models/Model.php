@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\LogicException;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 class Model extends EloquentModel
@@ -70,6 +71,59 @@ class Model extends EloquentModel
         if (!$this->is_allow_delete) {
             return false;
         }
+        return true;
+    }
+
+    /**
+     * 允许检测值唯一是否唯一的字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-14
+     * @return   array
+     */
+    protected static function allowUniqueAttrs()
+    {
+        return [];
+    }
+
+    /**
+     * 检测字段值是否唯一
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-14
+     * @param    string             $name  字段名
+     * @param    string             $value 字段值
+     * @param    int                $id    主键ID
+     * @return   bool
+     */
+    protected static function checkAttrUnique($name, $value, $id)
+    {
+        if (empty($name)) {
+            throw new LogicException(LogicException::UNIQUE_FIELD_NAME_EMPTY);
+        }
+
+        $allow_attrs = static::allowUniqueAttrs();
+        if (!in_array($name, $allow_attrs)) {
+            throw new LogicException(LogicException::UNIQUE_FIELD_NAME_DISALLOW);
+        }
+
+        if (empty($value)) {
+            throw new LogicException(LogicException::UNIQUE_FIELD_VALUE_EMPTY);
+        }
+
+        $query = static::where($name, $value);
+        if ($id) {
+            $query = $query->where('id', '<>', intval($id));
+        }
+
+        if (method_exists(static::class, 'initializeSoftDeletes')) {
+            // 当前类应用了软删除，需要过滤掉软删除记录
+            $column = defined('static::DELETED_AT') ? static::DELETED_AT : 'deleted_at';
+            $query = $query->whereNull($column);
+        }
+
+        if ($query->count()) {
+            throw new LogicException(LogicException::UNIQUE_FIELD_VALUE_PRESENT);
+        }
+
         return true;
     }
 

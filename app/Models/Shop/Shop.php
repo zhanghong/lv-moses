@@ -70,6 +70,17 @@ class Shop extends Model
     }
 
     /**
+     * 允许检测值唯一是否唯一的字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-14
+     * @return   array
+     */
+    protected static function allowUniqueAttrs()
+    {
+        return ['name'];
+    }
+
+    /**
      * 创建默认店铺
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-01
