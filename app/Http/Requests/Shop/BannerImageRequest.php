@@ -9,11 +9,11 @@ class BannerImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => [
+            'image' => [
                 'required',
                 'dimensions:min_width=100,max_width=1024,min_height=30,max_height=1000',
-                'min:10', // 最小10KB
-                'max:200', // 最大200KB
+                'min:20', // 最小10KB
+                'max:5120', // 最大5M
             ],
         ];
     }

@@ -9,7 +9,7 @@ class MainImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => [
+            'image' => [
                 'required',
                 'dimensions:min_width=200,min_height=200',
                 'min:20', // 最小20KB

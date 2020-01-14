@@ -31,7 +31,7 @@ class ConfigController extends Controller
             'max_width' => Shop::IMAGE_WIDTH_MAIN,
             'attachable' => $shop,
         ];
-        $image = Upload::saveShopAttach($shop->id, Shop::UPLOAD_TYPE_MAIN_IMAGE, $request->file, $options);
+        $image = Upload::saveShopAttach($shop->id, Shop::UPLOAD_TYPE_MAIN_IMAGE, $request->image, $options);
         return new UploadResource($image);
     }
 
@@ -42,7 +42,7 @@ class ConfigController extends Controller
             'max_width' => Shop::IMAGE_WIDTH_BANNER,
             'attachable' => $shop,
         ];
-        $image = Upload::saveShopAttach($shop->id, Shop::UPLOAD_TYPE_BANNER, $request->file, $options);
+        $image = Upload::saveShopAttach($shop->id, Shop::UPLOAD_TYPE_BANNER, $request->image, $options);
         return new UploadResource($image);
     }
 }
