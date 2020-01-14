@@ -52,6 +52,7 @@
     "webpack-bundle-analyzer": "^3.5.0"
   },
   "dependencies": {
+    "async-validator": "^3.2.3",
     "axios": "^0.19",
     "browser-sync": "^2.26.7",
     "browser-sync-webpack-plugin": "^2.2.2",

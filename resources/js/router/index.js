@@ -11,6 +11,8 @@ Vue.use(Router);
 
 /* Layout */
 import Layout from '@/layout';
+import errorRoutes from './modules/error';
+import shopRoutes from './modules/shop';
 
 /* Router for modules */
 
@@ -83,9 +85,11 @@ export const constantRoutes = [
       },
     ],
   },
+  shopRoutes,
 ];
 
 export const asyncRoutes = [
+  errorRoutes,
   { path: '*', redirect: '/404', hidden: true },
 ];
 

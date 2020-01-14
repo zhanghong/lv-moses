@@ -31,6 +31,8 @@ Route::group(['middleware' => 'api'], function () {
 
         Route::patch('shops/{shop}/config', 'Shop\ConfigController@update');
         Route::get('shops/{shop}/config', 'Shop\ConfigController@show');
+        Route::post('shops/{shop}/config/main_image', 'Shop\ConfigController@main_image');
+        Route::post('shops/{shop}/config/banner_image', 'Shop\ConfigController@banner_image');
 
         Route::post('shops/{shop}/uploads', 'Shop\UploadController@store');
         Route::get('shops/{shop}/uploads/{upload}', 'Shop\UploadController@show');
