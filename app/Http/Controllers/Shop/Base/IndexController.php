@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Shop;
-
-use Illuminate\Http\Request;
+namespace App\Http\Controllers\Shop\Base;
 
 use App\Models\Shop\Shop;
 use App\Models\Shop\Upload;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Shop\ConfigRequest;
 use App\Http\Requests\Shop\MainImageRequest;
 use App\Http\Requests\Shop\BannerImageRequest;
@@ -14,10 +11,11 @@ use App\Http\Requests\Base\FieldUniqueRequest;
 use App\Http\Resources\Shop\UploadResource;
 use App\Http\Resources\Shop\ConfigResource;
 use App\Exceptions\LogicException;
+use App\Http\Controllers\Shop\Controller;
 
-class ConfigController extends Controller
+class IndexController extends Controller
 {
-    public function show(Shop $shop)
+    public function index(Shop $shop)
     {
         return new ConfigResource($shop);
     }

@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Shop;
+namespace App\Http\Controllers\Shop\Base;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-
 use App\Models\Shop\Shop;
 use App\Models\Shop\Upload;
 use App\Http\Resources\Shop\UploadResource;
-
+use App\Http\Controllers\Shop\Controller;
 
 class UploadController extends Controller
 {

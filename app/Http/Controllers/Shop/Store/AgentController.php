@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Store;
-
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+namespace App\Http\Controllers\Shop\Store;
 
 use App\Models\Shop\Shop;
 use App\Models\Store\Agent;
 use App\Http\Requests\Store\AgentRequest;
 use App\Http\Resources\Store\AgentResource;
+use App\Http\Controllers\Shop\Controller;
 
 class AgentController extends Controller
 {

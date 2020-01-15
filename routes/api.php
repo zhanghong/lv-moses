@@ -26,18 +26,18 @@ Route::group(['middleware' => 'api'], function () {
         Route::get('roles/{role}/permissions', 'Role\RoleController@permissions');
         Route::apiResource('permissions', 'Role\PermissionController');
 
-        Route::apiResource('shops/{shop}/brands', 'Shop\BrandController');
-        Route::apiResource('shops/{shop}/categories', 'Shop\CategoryController');
+        Route::apiResource('shops/{shop}/base/brands', 'Shop\Base\BrandController');
+        Route::apiResource('shops/{shop}/base/categories', 'Shop\Base\CategoryController');
 
-        Route::patch('shops/{shop}/config', 'Shop\ConfigController@update');
-        Route::get('shops/{shop}/config', 'Shop\ConfigController@show');
-        Route::post('shops/{shop}/config/main_image', 'Shop\ConfigController@main_image');
-        Route::post('shops/{shop}/config/banner_image', 'Shop\ConfigController@banner_image');
-        Route::post('shops/unique', 'Shop\ConfigController@unique');
+        Route::patch('shops/{shop}/base/index', 'Shop\Base\IndexController@update');
+        Route::get('shops/{shop}/base/index', 'Shop\Base\IndexController@index');
+        Route::post('shops/{shop}/base/index/main_image', 'Shop\Base\IndexController@main_image');
+        Route::post('shops/{shop}/base/index/banner_image', 'Shop\Base\IndexController@banner_image');
+        Route::post('shops/base/index/unique', 'Shop\Base\IndexController@unique');
 
-        Route::post('shops/{shop}/uploads', 'Shop\UploadController@store');
-        Route::get('shops/{shop}/uploads/{upload}', 'Shop\UploadController@show');
+        Route::post('shops/{shop}/base/uploads', 'Shop\Base\UploadController@store');
+        Route::get('shops/{shop}/base/uploads/{upload}', 'Shop\Base\UploadController@show');
 
-        Route::apiResource('store/{shop}/agents', 'Store\AgentController');
+        Route::apiResource('shops/{shop}/store/agents', 'Shop\Store\AgentController');
     });
 });

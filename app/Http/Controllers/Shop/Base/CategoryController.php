@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Shop;
+namespace App\Http\Controllers\Shop\Base;
 
 use App\Models\Shop\Shop;
 use App\Models\Shop\Category;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Shop\CategoryRequest;
 use App\Http\Resources\Shop\CategoryResource;
+use App\Http\Controllers\Shop\Controller;
 
 class CategoryController extends Controller
 {
