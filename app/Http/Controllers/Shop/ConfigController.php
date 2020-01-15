@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Shop\ConfigRequest;
 use App\Http\Requests\Shop\MainImageRequest;
 use App\Http\Requests\Shop\BannerImageRequest;
+use App\Http\Requests\Base\FieldUniqueRequest;
 use App\Http\Resources\Shop\UploadResource;
 use App\Http\Resources\Shop\ConfigResource;
 use App\Exceptions\LogicException;
@@ -27,20 +28,27 @@ class ConfigController extends Controller
         return new ConfigResource($shop);
     }
 
-    public function unique(Request $request)
+    // 验证店铺名称等字段值是否唯一
+    public function unique(FieldUniqueRequest $request)
     {
-        $id = $request->input('id', 0);
-        $name = $request->input('name');
-        $value = $request->input('value');
+        $id = $request->input('id');
+        $name = $request->input('name', '');
+        $value = $request->input('value', '');
+
+        $wheres = [];
+        if ($id > 0) {
+           $wheres[] = ['id', '<>', $id];
+        }
         try {
-            $flag = Shop::checkAttrUnique($name, $value, $id);
+            $flag = Shop::checkAttrUnique($name, $value, $wheres);
         } catch (LogicException $e) {
-            return $e;
+            return $e->render();
         }
 
         return ['code' => 200, 'message' => '字段值唯一'];
     }
 
+    // 上传Logo图片
     public function main_image(MainImageRequest $request, Shop $shop)
     {
         $options = [
@@ -52,6 +60,7 @@ class ConfigController extends Controller
         return new UploadResource($image);
     }
 
+    // 上传Banner图片
     public function banner_image(BannerImageRequest $request, Shop $shop)
     {
         $options = [

@@ -88,15 +88,15 @@ class Model extends EloquentModel
     /**
      * 检测字段值是否唯一
      * @Author   zhanghong(Laifuzi)
-     * @DateTime 2020-01-14
-     * @param    string             $name  字段名
-     * @param    string             $value 字段值
-     * @param    int                $id    主键ID
-     * @return   bool
+     * @DateTime 2020-01-15
+     * @param    string             $name    字段名
+     * @param    string             $value   字段值
+     * @param    array              $conditons 附加条件
+     * @return   array
      */
-    protected static function checkAttrUnique($name, $value, $id)
+    protected static function checkAttrUnique(string $name, string $value, array $conditons = []): array
     {
-        if (empty($name)) {
+        if (!$name) {
             throw new LogicException(LogicException::UNIQUE_FIELD_NAME_EMPTY);
         }
 
@@ -105,13 +105,14 @@ class Model extends EloquentModel
             throw new LogicException(LogicException::UNIQUE_FIELD_NAME_DISALLOW);
         }
 
-        if (empty($value)) {
+        if (!$value) {
             throw new LogicException(LogicException::UNIQUE_FIELD_VALUE_EMPTY);
         }
 
         $query = static::where($name, $value);
-        if ($id) {
-            $query = $query->where('id', '<>', intval($id));
+
+        if ($conditons) {
+            $query = $query->where($conditons);
         }
 
         if (method_exists(static::class, 'initializeSoftDeletes')) {
@@ -124,7 +125,10 @@ class Model extends EloquentModel
             throw new LogicException(LogicException::UNIQUE_FIELD_VALUE_PRESENT);
         }
 
-        return true;
+        return [
+            'code' => LogicException::STATUS_OK,
+            'message' => '',
+        ];
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Http\Request;
 
 class LogicException extends Exception
 {
@@ -42,7 +41,7 @@ class LogicException extends Exception
         $this->error_code = $error_code;
     }
 
-    public function render(Request $request)
+    public function render()
     {
         $status_codes = $this->httpStatusCodes();
         $status  = in_array($this->http_code, $status_codes) ? $this->http_code : self::HTTP_OK;
@@ -56,7 +55,7 @@ class LogicException extends Exception
             'meta' => $this->meta,
         ];
 
-        if ($request->expectsJson()) {
+        if (request()->expectsJson()) {
             return response()->json($content, $status);
         }
 

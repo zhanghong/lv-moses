@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\Shop;
 
-use Illuminate\Validation\Rule;
+use App\Models\Shop\Shop;
 use App\Http\Requests\FormRequest;
+use App\Exceptions\LogicException;
 
 class ConfigRequest extends FormRequest
 {
@@ -11,14 +12,23 @@ class ConfigRequest extends FormRequest
     {
         return [
             'name' => [
+                'sometimes',
                 'required',
                 'min:2',
                 'max:20',
-                Rule::unique('shops')->where(function ($query) {
-                    return $query->where('id', '<>', $this->route('shop')->id)->whereNull('deleted_at');
-                }),
+                function ($attribute, $value, $fail) {
+                    $wheres = [];
+                    if ($this->route('shop')) {
+                        $wheres[] = ['id','<>', $this->route('shop')->id];
+                    }
+                    try {
+                        Shop::checkAttrUnique('name', $value, $wheres);
+                    } catch (LogicException $e) {
+                        $fail('店铺名 已经存在。');
+                    }
+                },
             ],
-            'order' => ['integer', 'min:0'],
+            'order' => ['sometimes', 'integer', 'min:0'],
             'seo_keywords' => ['max:50'],
             'seo_description' => ['max:200'],
             'introduce' => ['max:200'],
