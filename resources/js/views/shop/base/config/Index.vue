@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { getShop, updateShop } from '@/api/shop/base/config';
+import { getShop, updateShop, checkNameUnique } from '@/api/shop/base/config';
 
 const defaultShop = {
   id: 1,
@@ -68,6 +68,20 @@ const defaultShop = {
 
 export default {
   data() {
+    var validateNameUnique = (rule, value, callback) => {
+      checkNameUnique(this.shop.id, this.shop.name)
+        .then(response => {
+          if (response.code !== 200) {
+            callback(new Error('店铺名称已存在111'));
+          } else {
+            callback();
+          }
+        })
+        .catch(error => {
+          console.log(error.response.status);
+          callback();
+        });
+    };
     return {
       shop: Object.assign({}, defaultShop),
       loading: false,
@@ -76,6 +90,7 @@ export default {
         name: [
           { required: true, message: '店铺名称不能为空', trigger: 'blur' },
           { min: 2, max: 20, message: '店铺名称长度在 2 到 20 个字符', trigger: 'blur' },
+          { validator: validateNameUnique, trigger: 'blur' },
         ],
         main_image_url: [
           { required: true, message: 'Logo 图片不能为空', trigger: 'blur' },

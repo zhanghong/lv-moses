@@ -40,7 +40,7 @@ class IndexController extends Controller
         try {
             $flag = Shop::checkAttrUnique($name, $value, $wheres);
         } catch (LogicException $e) {
-            return $e->render();
+            return $e;
         }
 
         return ['code' => 200, 'message' => '字段值唯一'];

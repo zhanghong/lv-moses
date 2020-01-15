@@ -34,7 +34,7 @@ class LogicException extends Exception
      * @param    int                $http_code  错误码
      * @param    array              $meta 除message和code之外，还需要返回值
      */
-    public function __construct(int $error_code, int $http_code = self::HTTP_UNPROCESSABLE, array $meta = [])
+    public function __construct(int $error_code, int $http_code = self::HTTP_OK, array $meta = [])
     {
         $this->meta = $meta;
         $this->http_code = $http_code;
