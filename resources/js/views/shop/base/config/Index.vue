@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { getShop, updateShop } from '@/api/shop/config';
+import { getShop, updateShop } from '@/api/shop/base/config';
 
 const defaultShop = {
   id: 1,
