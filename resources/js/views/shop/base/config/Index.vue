@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <el-form ref="shop" :model="shop" :rules="rules" label-width="150px">
-      <el-form-item label="店铺名称" prop="name">
+      <el-form-item :label="fields.name" prop="name">
         <el-input v-if="isEdit" v-model="shop.name" placeholder="请输入店铺名称" />
         <div v-else>{{ shop.name }}</div>
       </el-form-item>
-      <el-form-item label="Logo 图片" prop="main_image_url">
+      <el-form-item :label="fields.main_image_url" prop="main_image_url">
         <el-upload v-if="isEdit" class="avatar-uploader" :action="uploadMainImageUrl" name="image" accept="image/png, image/jpeg" :show-file-list="false" :on-success="handleMainImageSuccess" :before-upload="beforeMainImageUpload">
           <img v-if="shop.main_image_url" :src="shop.main_image_url" class="img-avatar">
           <i v-else class="el-icon-plus uploader-icon uploader-icon-avatar" />
@@ -13,7 +13,7 @@
         <el-image v-else-if="shop.main_image_url.length" class="img-avatar" :src="shop.main_image_url" />
         <el-image v-else class="img-avatar" />
       </el-form-item>
-      <el-form-item label="Banner 图片" prop="banner_url">
+      <el-form-item :label="fields.name" prop="banner_url">
         <el-upload v-if="isEdit" class="banner-uploader" :action="uploadBannerImageUrl" name="image" accept="image/png, image/jpeg" :show-file-list="false" :on-success="handleBannerSuccess" :before-upload="beforeBannerUpload">
           <img v-if="shop.banner_url" :src="shop.banner_url" class="img-banner">
           <i v-else class="el-icon-plus uploader-icon uploader-icon-banner" />
@@ -21,15 +21,15 @@
         <el-image v-else-if="shop.banner_url.length" class="img-banner" :src="shop.banner_url" />
         <el-image v-else class="img-banner" />
       </el-form-item>
-      <el-form-item label="店铺简介" prop="introduce">
+      <el-form-item :label="fields.introduce" prop="introduce">
         <el-input v-if="isEdit" v-model="shop.introduce" type="textarea" placeholder="请输入店铺介绍信息" />
         <div v-else>{{ shop.introduce }}</div>
       </el-form-item>
-      <el-form-item label="SEO关键词" prop="seo_keywords">
+      <el-form-item :label="fields.seo_keywords" prop="seo_keywords">
         <el-input v-if="isEdit" v-model="shop.seo_keywords" type="textarea" placeholder="请输入SEO搜索关键词" />
         <div v-else>{{ shop.seo_keywords }}</div>
       </el-form-item>
-      <el-form-item label="SEO描述" prop="seo_description">
+      <el-form-item :label="fields.seo_description" prop="seo_description">
         <el-input v-if="isEdit" v-model="shop.seo_description" type="textarea" placeholder="请输入SEO描述" />
         <div v-else>{{ shop.seo_description }}</div>
       </el-form-item>
@@ -86,6 +86,14 @@ export default {
       shop: Object.assign({}, defaultShop),
       loading: false,
       isEdit: false,
+      fields: {
+        name: this.$t('shop.name'),
+        main_image_url: this.$t('shop.main_image_url'),
+        banner_url: this.$t('shop.banner_url'),
+        introduce: this.$t('shop.introduce'),
+        seo_keywords: this.$t('shop.seo_keywords'),
+        seo_description: this.$t('shop.seo_description'),
+      },
       rules: {
         name: [
           { required: true, message: '店铺名称不能为空', trigger: 'blur' },

@@ -139,8 +139,17 @@ export default {
   },
   model: {
     shop: '店铺',
+    shop_config: '店铺信息',
     store: '门店',
     store_agent: '经销商',
+  },
+  shop: {
+    name: '店铺名称',
+    main_image_url: 'Logo 图片',
+    banner_url: 'Banner 图片',
+    introduce: '店铺简介',
+    seo_keywords: 'SEO关键词',
+    seo_description: 'SEO描述',
   },
   store_agent: {
     name: '经销商名称',
