@@ -2,11 +2,11 @@
   <div class="app-container">
     <el-form ref="shop" :model="shop" :rules="rules" label-width="150px">
       <el-form-item label="店铺名称" prop="name">
-        <el-input v-if="isEdit" v-model="shop.name" />
+        <el-input v-if="isEdit" v-model="shop.name" placeholder="请输入店铺名称" />
         <div v-else>{{ shop.name }}</div>
       </el-form-item>
       <el-form-item label="Logo 图片" prop="main_image_url">
-        <el-upload v-if="isEdit" class="avatar-uploader" action="/api/shops/1/config/main_image" name="image" accept="image/png, image/jpeg" :show-file-list="false" :on-success="handleMainImageSuccess" :before-upload="beforeMainImageUpload">
+        <el-upload v-if="isEdit" class="avatar-uploader" :action="uploadMainImageUrl" name="image" accept="image/png, image/jpeg" :show-file-list="false" :on-success="handleMainImageSuccess" :before-upload="beforeMainImageUpload">
           <img v-if="shop.main_image_url" :src="shop.main_image_url" class="img-avatar">
           <i v-else class="el-icon-plus uploader-icon uploader-icon-avatar" />
         </el-upload>
@@ -14,7 +14,7 @@
         <el-image v-else class="img-avatar" />
       </el-form-item>
       <el-form-item label="Banner 图片" prop="banner_url">
-        <el-upload v-if="isEdit" class="banner-uploader" action="/api/shops/1/config/banner_image" name="image" accept="image/png, image/jpeg" :show-file-list="false" :on-success="handleBannerSuccess" :before-upload="beforeBannerUpload">
+        <el-upload v-if="isEdit" class="banner-uploader" :action="uploadBannerImageUrl" name="image" accept="image/png, image/jpeg" :show-file-list="false" :on-success="handleBannerSuccess" :before-upload="beforeBannerUpload">
           <img v-if="shop.banner_url" :src="shop.banner_url" class="img-banner">
           <i v-else class="el-icon-plus uploader-icon uploader-icon-banner" />
         </el-upload>
@@ -22,15 +22,15 @@
         <el-image v-else class="img-banner" />
       </el-form-item>
       <el-form-item label="店铺简介" prop="introduce">
-        <el-input v-if="isEdit" v-model="shop.introduce" type="textarea" />
+        <el-input v-if="isEdit" v-model="shop.introduce" type="textarea" placeholder="请输入店铺介绍信息" />
         <div v-else>{{ shop.introduce }}</div>
       </el-form-item>
       <el-form-item label="SEO关键词" prop="seo_keywords">
-        <el-input v-if="isEdit" v-model="shop.seo_keywords" type="textarea" />
+        <el-input v-if="isEdit" v-model="shop.seo_keywords" type="textarea" placeholder="请输入SEO搜索关键词" />
         <div v-else>{{ shop.seo_keywords }}</div>
       </el-form-item>
       <el-form-item label="SEO描述" prop="seo_description">
-        <el-input v-if="isEdit" v-model="shop.seo_description" type="textarea" />
+        <el-input v-if="isEdit" v-model="shop.seo_description" type="textarea" placeholder="请输入SEO描述" />
         <div v-else>{{ shop.seo_description }}</div>
       </el-form-item>
       <el-form-item v-if="isEdit">
@@ -72,7 +72,7 @@ export default {
       checkNameUnique(this.shop.id, this.shop.name)
         .then(response => {
           if (response.code !== 200) {
-            callback(new Error('店铺名称已存在111'));
+            callback(new Error('店铺名称已存在'));
           } else {
             callback();
           }
@@ -111,6 +111,16 @@ export default {
       },
     };
   },
+  computed: {
+    // 上传Logo图片后端路由
+    uploadMainImageUrl() {
+      return '/api/shops/' + this.shop.id + '/base/index/main_image';
+    },
+    // 上传Banner图片后端路由
+    uploadBannerImageUrl() {
+      return '/api/shops/' + this.shop.id + '/base/index/banner_image';
+    },
+  },
   created() {
     this.fetchData();
   },
@@ -120,8 +130,8 @@ export default {
         .then(response => {
           this.shop = response.data;
         })
-        .catch(err => {
-          console.log(err);
+        .catch(error => {
+          console.log(error.response.status);
         });
     },
     showFrom() {
@@ -138,9 +148,9 @@ export default {
               this.loading = false;
               this.isEdit = false;
             })
-            .catch(err => {
+            .catch(error => {
               this.loading = false;
-              console.log(err);
+              console.log(error.response.status);
               this.$message('店铺信息更新失败');
             });
         } else {
