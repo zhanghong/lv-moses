@@ -13,7 +13,7 @@ class AgentRequest extends FormRequest
             'name' => [
                 'required',
                 'min:2',
-                'max:50',
+                'max:20',
                 function ($attribute, $value, $fail) {
                     $wheres = [];
                     if ($this->route('shop')) {
@@ -36,10 +36,15 @@ class AgentRequest extends FormRequest
             ],
             'contact_phone' => [
                 'required',
-                'min:10',
-                'max:20',
+                'max:30',
             ],
-            'order' => ['integer', 'min:0'],
+            'contact_address' => [
+                'max: 100',
+            ],
+            'order' => [
+                'integer',
+                'min:0'
+            ],
         ];
     }
 
@@ -49,6 +54,7 @@ class AgentRequest extends FormRequest
             'name' => '经销商名称',
             'contact_name' => '联系人',
             'contact_phone' => '联系方式',
+            'contact_address' => '联系地址',
             'order' => '排序编号',
             'is_enabled' => '是否启用',
         ];

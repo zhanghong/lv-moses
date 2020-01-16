@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop\Store;
 use App\Models\Shop\Shop;
 use App\Models\Store\Agent;
 use App\Http\Requests\Store\AgentRequest;
+use App\Http\Requests\Base\FieldUniqueRequest;
 use App\Http\Resources\Store\AgentResource;
 use App\Http\Controllers\Shop\Controller;
 
@@ -44,12 +45,35 @@ class AgentController extends Controller
         return response()->json(null, 204);
     }
 
+    // 验证店铺名称等字段值是否唯一
+    public function unique(FieldUniqueRequest $request, Shop $shop)
+    {
+        $id = $request->input('id');
+        $name = $request->input('name', '');
+        $value = $request->input('value', '');
+
+        $wheres = [
+            ['shop_id', '=', $shop->id]
+        ];
+        if ($id > 0) {
+            $wheres[] = ['id', '<>', $id];
+        }
+        try {
+            $flag = Agent::checkAttrUnique($name, $value, $wheres);
+        } catch (LogicException $e) {
+            return $e;
+        }
+
+        return ['code' => 200, 'message' => '字段值唯一'];
+    }
+
     private function filterRequestParams($request)
     {
         $allow_names = [
             'name',
             'contact_name',
             'contact_phone',
+            'contact_address',
             'is_enabled',
             'order',
         ];

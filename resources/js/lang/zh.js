@@ -137,6 +137,26 @@ export default {
     cancel: '取 消',
     confirm: '确 定',
   },
+  model: {
+    shop: '店铺',
+    store: '门店',
+    store_agent: '经销商',
+  },
+  store_agent: {
+    name: '经销商名称',
+    contact_name: '联系人',
+    contact_phone: '联系方式',
+    contact_address: '联系地址',
+    store_count: '下属门店',
+  },
+  options: {
+    waring: '警告',
+    info: '提示',
+    create_success: '创建成功',
+    update_success: '更新成功',
+    delete_success: '删除成功',
+    delete_cancel: '取消删除',
+  },
   errorLog: {
     tips: '请点击右上角bug小图标',
     description: '现在的管理后台基本都是spa的形式了，它增强了用户体验，但同时也会增加页面出问题的可能性，可能一个小小的疏忽就导致整个页面的死锁。好在 Vue 官网提供了一个方法来捕获处理异常，你可以在其中进行错误处理或者异常上报。',

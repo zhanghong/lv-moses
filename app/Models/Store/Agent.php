@@ -16,6 +16,9 @@ class Agent extends Model
         'name',
         'contact_name',
         'contact_phone',
+        'contact_address',
+        'order',
+        'is_enabled',
     ];
 
     protected $casts = [

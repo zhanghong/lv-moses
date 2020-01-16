@@ -1,5 +1,5 @@
 import Layout from '@/layout';
-
+// 店铺后台
 const shopRoutes = {
   path: '/shop',
   component: Layout,
@@ -12,15 +12,15 @@ const shopRoutes = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/shop/base/config/index.vue'),
+      component: () => import('@/views/shop/base/config/Index'),
       name: 'index',
-      meta: { title: 'index' },
+      meta: { title: 'index', icon: 'list' },
     },
     {
-      path: 'config',
-      component: () => import('@/views/shop/base/config/index.vue'),
-      name: 'config',
-      meta: { title: 'config' },
+      path: 'agent',
+      component: () => import('@/views/shop/store/agent/List'),
+      name: 'agent',
+      meta: { title: 'agent', icon: 'list' },
     },
   ],
 };

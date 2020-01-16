@@ -38,6 +38,7 @@ Route::group(['middleware' => 'api'], function () {
         Route::post('shops/{shop}/base/uploads', 'Shop\Base\UploadController@store');
         Route::get('shops/{shop}/base/uploads/{upload}', 'Shop\Base\UploadController@show');
 
+        Route::post('shops/{shop}/store/agents/unique', 'Shop\Store\AgentController@unique');
         Route::apiResource('shops/{shop}/store/agents', 'Shop\Store\AgentController');
     });
 });

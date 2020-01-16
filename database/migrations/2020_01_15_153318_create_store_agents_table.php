@@ -15,6 +15,7 @@ class CreateStoreAgentsTable extends Migration
             $table->string('name', 100)->default('')->nullable(false)->comment('名称');
             $table->string('contact_name', 30)->default('')->nullable(false)->comment('联系人');
             $table->string('contact_phone', 30)->default('')->nullable(false)->comment('联系电话');
+            $table->string('contact_address', 255)->default('')->comment('联系地址');
             $table->integer('store_count')->default(0)->comment('门店数量');
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
