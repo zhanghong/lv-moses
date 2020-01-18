@@ -8,6 +8,7 @@ use App\Http\Requests\Store\AgentRequest;
 use App\Http\Requests\Base\FieldUniqueRequest;
 use App\Http\Resources\Store\AgentResource;
 use App\Http\Controllers\Shop\Controller;
+use App\Exceptions\LogicException;
 
 class AgentController extends Controller
 {

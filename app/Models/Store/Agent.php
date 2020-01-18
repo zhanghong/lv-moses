@@ -30,6 +30,11 @@ class Agent extends Model
         return $this->belongsTo(Shop::class);
     }
 
+    public function stores()
+    {
+        return $this->hasMany(Stores::class);
+    }
+
     /**
      * 允许检测值唯一是否唯一的字段列表
      * @Author   zhanghong(Laifuzi)

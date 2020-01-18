@@ -3,10 +3,24 @@
 namespace App\Models;
 
 use App\Exceptions\LogicException;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 class Model extends EloquentModel
 {
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $fields = static::fillableFieldNames();
+        $this->fillable($fields);
+    }
+
+    public function editor()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     /**
      * 实例是否允许被更新（业务逻辑）
      * @Author   zhanghong(Laifuzi)
@@ -78,7 +92,7 @@ class Model extends EloquentModel
      * 允许检测值唯一是否唯一的字段列表
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-14
-     * @return   array
+     * @return   Collection
      */
     protected static function allowUniqueAttrs()
     {
@@ -132,17 +146,63 @@ class Model extends EloquentModel
     }
 
     /**
+     * 允许表单更新字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-17
+     * @return   array
+     */
+    public static function parseFields() {
+        return collect([]);
+    }
+
+    /**
+     * 模型允许填充字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-17
+     * @return   array
+     */
+    public static function fillableFieldNames() {
+        return static::parseFields()->map(function ($field, $key) {
+            return $field['name'];
+        })->all();
+    }
+
+    /**
+     * 过滤并填充属性
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-17
+     * @param    array              $data   属性值列表
+     * @param    Collection/array   $fields 允许填充属性列表
+     * @return   Model
+     */
+    public function parseFill($data, $fields = null) {
+        if (!$fields) {
+            $fields = static::parseFields();
+        } else if (is_array($fields)) {
+            $fields = collect($fields);
+        }
+
+        if (!$fields->isEmpty()) {
+            $data = $this->filterFieldParams($fields, $data);
+        }
+
+        $this->fill($data);
+        return $this;
+    }
+
+    /**
      * 过滤模型属性值
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-07
-     * @param    array              $fields 字段列表
+     * @param    Collection         $fields 字段列表
      * @param    array              $params 提交数据
      * @return   array
      */
-    protected static function filterFieldParams(array $fields, array $params):array
+    protected function filterFieldParams(Collection $fields, array $params):array
     {
         $data = [];
-        if(empty($fields) || empty($params)){
+
+        if($fields->isEmpty() || empty($params)){
             return $data;
         }
 
@@ -178,6 +238,9 @@ class Model extends EloquentModel
                     break;
                 case 'int':
                     $value = intval($value);
+                    break;
+                case 'float':
+                    $value = floatval($value);
                     break;
                 case 'bool':
                     $value = boolval($value);

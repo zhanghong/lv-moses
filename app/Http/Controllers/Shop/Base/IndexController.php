@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Shop\Base;
 
 use App\Models\Shop\Shop;
-use App\Models\Shop\Upload;
+use App\Models\Base\Upload;
 use App\Http\Requests\Shop\ConfigRequest;
 use App\Http\Requests\Shop\MainImageRequest;
 use App\Http\Requests\Shop\BannerImageRequest;
 use App\Http\Requests\Base\FieldUniqueRequest;
-use App\Http\Resources\Shop\UploadResource;
+use App\Http\Resources\Base\UploadResource;
 use App\Http\Resources\Shop\ConfigResource;
 use App\Exceptions\LogicException;
 use App\Http\Controllers\Shop\Controller;
@@ -52,9 +52,8 @@ class IndexController extends Controller
         $options = [
             'folder' => 'shop',
             'max_width' => Shop::IMAGE_WIDTH_MAIN,
-            'attachable' => $shop,
         ];
-        $image = Upload::saveShopAttach($shop->id, Shop::UPLOAD_TYPE_MAIN_IMAGE, $request->image, $options);
+        $image = Upload::saveAttach($shop, Shop::UPLOAD_TYPE_MAIN_IMAGE, $request->image, $options);
         return new UploadResource($image);
     }
 
@@ -64,9 +63,8 @@ class IndexController extends Controller
         $options = [
             'folder' => 'shop',
             'max_width' => Shop::IMAGE_WIDTH_BANNER,
-            'attachable' => $shop,
         ];
-        $image = Upload::saveShopAttach($shop->id, Shop::UPLOAD_TYPE_BANNER, $request->image, $options);
+        $image = Upload::saveAttach($shop, Shop::UPLOAD_TYPE_BANNER, $request->image, $options);
         return new UploadResource($image);
     }
 }

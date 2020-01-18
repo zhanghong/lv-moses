@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Shop\Base;
 
 use Illuminate\Http\Request;
 use App\Models\Shop\Shop;
-use App\Models\Shop\Upload;
-use App\Http\Resources\Shop\UploadResource;
+use App\Models\Base\Upload;
+use App\Http\Resources\Base\UploadResource;
 use App\Http\Controllers\Shop\Controller;
 
 class UploadController extends Controller
@@ -15,11 +15,13 @@ class UploadController extends Controller
         $attach_type = $request->input('attach_type', 'demo');
 
         $options = [];
-        $options['attachable_type'] = $request->input('attachable_type', '');
-        $options['attachable_id'] = $request->input('attachable_id', 0);
         $options['max_width'] = $request->input('max_width', 0);
+        $is_bind = $request->input('is_bind', '');
+        if ($is_bind) {
+            $options['attachable'] = $shop;
+        }
 
-        $upload = Upload::saveShopAttach($shop->id, $attach_type, $request->file, $options);
+        $upload = Upload::saveAttach($shop, $attach_type, $request->file, $options);
         return new UploadResource($upload);
     }
 

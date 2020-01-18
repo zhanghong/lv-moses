@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
 use App\Models\User\User;
+use App\Models\Base\Upload;
 use App\Exceptions\DisallowException;
 
 class Shop extends Model
@@ -14,9 +15,9 @@ class Shop extends Model
     use SoftDeletes;
 
     // 店铺Logo图片
-    public const UPLOAD_TYPE_MAIN_IMAGE = 'cover';
+    public const UPLOAD_TYPE_MAIN_IMAGE = 'shop_cover';
     // 店铺Banner图片
-    public const UPLOAD_TYPE_BANNER = 'banner';
+    public const UPLOAD_TYPE_BANNER = 'shop_banner';
 
     // 店铺Logo图片最大宽度
     public const IMAGE_WIDTH_MAIN = 200;
@@ -126,6 +127,21 @@ class Shop extends Model
     }
 
     /**
+     * 允许表单更新字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-17
+     * @return   array
+     */
+    public static function parseFields() {
+        return collect([
+            ['name' => 'manager_id', 'type' => 'int'],
+            ['name' => 'name', 'type' => 'string'],
+            ['name' => 'order', 'type' => 'int', 'default' => 0],
+            ['name' => 'is_enabled', 'type' => 'bool'],
+        ]);
+    }
+
+    /**
      * 更新店铺信息
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-07
@@ -138,29 +154,23 @@ class Shop extends Model
             throw new DisallowException('店铺信息不允许更新');
         }
 
-        $fields = [
-            ['name' => 'manager_id', 'type' => 'int'],
-            ['name' => 'name', 'type' => 'string'],
-            ['name' => 'order', 'type' => 'int', 'default' => 0],
-            ['name' => 'is_enabled', 'type' => 'bool'],
-        ];
-        $data = static::filterFieldParams($fields, $params);
-
         DB::transaction(function () use ($data, $params) {
+            // 过滤并赋值
+            $this->parseFill($params);
+
+            // 保存Logo图片
             $image = null;
-            if (isset($params['main_image_id']) && $params['main_image_id']) {
-                $image = Upload::shopFind($this->id, static::UPLOAD_TYPE_MAIN_IMAGE, $params['main_image_id']);
-                if ($image) {
-                    $data['main_image_url'] = $image->file_path;
-                }
+            if (isset($params['main_image_id'])) {
+                $image = Upload::ownFirst($this, static::UPLOAD_TYPE_MAIN_IMAGE, null, ['ids' => $params['main_image_id']]);
             }
-
-            $this->update($data);
-            Config::updateOrCreateByShop($params, $this);
-
             if ($image) {
-                Upload::morphSet($this, static::UPLOAD_TYPE_MAIN_IMAGE, $image->id);
+                $this->main_image_url = $image->file_path;
+                Upload::ownSet($this, static::UPLOAD_TYPE_MAIN_IMAGE, $this, $image->id);
             }
+
+            $this->save();
+
+            Config::updateOrCreateByShop($params, $this);
         });
 
         return $this;

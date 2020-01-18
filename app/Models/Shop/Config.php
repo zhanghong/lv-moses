@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
 use App\Models\User\User;
+use App\Models\Base\Upload;
 
 class Config extends Model
 {
@@ -34,6 +35,20 @@ class Config extends Model
     }
 
     /**
+     * 允许表单更新字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-17
+     * @return   array
+     */
+    public static function parseFields() {
+        return collect([
+            ['name' => 'seo_keywords', 'type' => 'string', 'default' => ''],
+            ['name' => 'seo_description', 'type' => 'string', 'default' => ''],
+            ['name' => 'introduce', 'type' => 'string', 'default' => ''],
+        ]);
+    }
+
+    /**
      * 通过所属店铺创建或更新记录
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-13
@@ -43,21 +58,24 @@ class Config extends Model
      */
     public static function updateOrCreateByShop(array $params, Shop $shop)
     {
-        $fields = [
-            ['name' => 'seo_keywords', 'type' => 'string', 'default' => ''],
-            ['name' => 'seo_description', 'type' => 'string', 'default' => ''],
-            ['name' => 'introduce', 'type' => 'string', 'default' => ''],
-        ];
-        $data = static::filterFieldParams($fields, $params);
 
-        if (isset($params['banner_id']) && $params['banner_id']) {
-            $image = Upload::shopFind($shop->id, Shop::UPLOAD_TYPE_BANNER, $params['banner_id']);
-            if ($image) {
-                $data['banner_url'] = $image->file_path;
-                Upload::morphSet($shop, Shop::UPLOAD_TYPE_BANNER, $image->id);
-            }
+        $config = static::firstOrNew(['shop_id' => $shop->id]);
+        $config->parseFill($params);
+
+        $image = null;
+        if (isset($params['banner_id'])) {
+            $image = Upload::ownFirst($shop, Shop::UPLOAD_TYPE_BANNER, null, ['ids' => $params['banner_id']]);
+        }
+        if ($image) {
+            $config->banner_url = $image->file_path;
         }
 
-        return static::updateOrCreate(['shop_id' => $shop->id], $data);
+        $config->save();
+        // Upload更新一定要在save方法之后，否则可能config->id is null
+        if ($image) {
+            Upload::ownSet($shop, Shop::UPLOAD_TYPE_BANNER, $config, $image->id);
+        }
+
+        return $config;
     }
 }
