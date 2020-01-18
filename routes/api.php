@@ -18,6 +18,9 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('auth/logout', 'AuthController@logout');
         });
 
+        Route::get('areas', 'Common\AreaController@index');
+        Route::get('areas/{area}', 'Common\AreaController@show');
+
         Route::apiResource('users', 'User\UserController');
         Route::get('users/{user}/permissions', 'User\UserController@permissions');
         Route::put('users/{user}/permissions', 'User\UserController@updatePermissions');
@@ -37,6 +40,13 @@ Route::group(['middleware' => 'api'], function () {
 
         Route::post('shops/{shop}/base/uploads', 'Shop\Base\UploadController@store');
         Route::get('shops/{shop}/base/uploads/{upload}', 'Shop\Base\UploadController@show');
+
+        Route::post('shops/{shop}/store/index/unique', 'Shop\Store\AgentController@unique');
+        Route::apiResource('shops/{shop}/store/index', 'Shop\Store\IndexController', ['parameters' => ['index' => 'store']]);
+        // 门店图片
+        Route::get('shops/{shop}/store/image/{store}', 'Shop\Store\ImageController@index');
+        Route::post('shops/{shop}/store/image', 'Shop\Store\ImageController@store');
+        Route::delete('shops/{shop}/store/image/{image}', 'Shop\Store\ImageController@destroy');
 
         Route::post('shops/{shop}/store/agents/unique', 'Shop\Store\AgentController@unique');
         Route::apiResource('shops/{shop}/store/agents', 'Shop\Store\AgentController');
