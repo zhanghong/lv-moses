@@ -66,6 +66,11 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     externalLink: '外链',
+    shopManage: '店铺管理',
+    shopConfig: '店铺设置',
+    agentManage: '经销商管理',
+    createAgent: '添加经销商',
+    editManage: '编辑经销商',
   },
   navbar: {
     logOut: '退出登录',
