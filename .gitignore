@@ -22,3 +22,5 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .DS_Store
+/deploy/deploy.php
+/deploy/*.env

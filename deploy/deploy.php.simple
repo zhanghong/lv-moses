@@ -1,0 +1,72 @@
+<?php
+namespace Deployer;
+
+require 'recipe/laravel.php';
+
+// 设置一个名为 repository，值为初始化脚本时输入的 github 仓库地址
+set('repository', 'https://github.com/zhanghong/lv-moses.git');
+// shared_files / shared_dirs 这两个环境变量是数组格式，add 函数可以往数组里添加值
+add('shared_files', []);
+add('shared_dirs', [
+    'public/uploads',
+]);
+// 在 deploy:vendors 之前调用 deploy:copy_dirs
+add('copy_dirs', ['node_modules', 'vendor']);
+// 添加一台服务器，服务器 IP/域名 是 project.com
+set('writable_dirs', [
+    // 'public/uploads',
+]);
+
+// 添加一台服务器，服务器 IP/域名 是 moses.zhanghong.info
+host('moses.zhanghong.info')
+    ->user('root') // 使用 root 账号登录
+    ->identityFile('~/.ssh/id_rsa') // 指定登录密钥文件路径
+    ->become('www-data') // 以 www-data 身份执行命令
+    ->set('deploy_path', '/var/www/moses'); // 指定部署目录
+
+// 定义一个上传 .env 文件的任务
+desc('Upload .env file');
+task('env:upload', function() {
+    // 将本地的 .env 文件上传到代码目录的 .env
+    upload('production.env', '{{release_path}}/.env');
+});
+
+// // 安装node packages
+// desc('Install node packages');
+// task('node:install', function() {
+//     run('cd {{release_path}} && /usr/bin/yarn install');
+// });
+
+// 定义一个前端编译的任务
+desc('Yarn');
+task('deploy:yarn', function () {
+    // release_path 是 Deployer 的一个内部变量，代表当前代码目录路径
+    // run() 的默认超时时间是 5 分钟，而 yarn 相关的操作又比较费时，因此我们在第二个参数传入 timeout = 600，指定这个命令的超时时间是 10 分钟
+    run('cd {{release_path}} && SASS_BINARY_SITE=http://npm.taobao.org/mirrors/node-sass yarn && yarn production', ['timeout' => 600]);
+});
+
+// 定义一个 执行 es:migrate 命令的任务
+desc('Execute elasticsearch migrate');
+task('es:migrate', function() {
+    // {{bin/php}} 是 Deployer 内置的变量，是 PHP 程序的绝对路径。
+    run('{{bin/php}} {{release_path}}/artisan es:migrate');
+});
+
+
+// 定义一个后置钩子，在 deploy:shared 之后执行 env:upload 任务
+after('deploy:shared', 'env:upload');
+// 在 deploy:vendors 之前调用 deploy:copy_dirs
+before('deploy:vendors', 'deploy:copy_dirs');
+// 定义一个后置钩子，在 deploy:vendors 之后执行 deploy:yarn 任务
+after('deploy:vendors', 'deploy:yarn');
+
+// 定义一个后置钩子，当 deploy:failed 任务被执行之后，Deployer 会执行 deploy:unlock 任务
+after('deploy:failed', 'deploy:unlock');
+// 定义一个前置钩子，在执行 deploy:symlink 任务之前先执行 artisan:migrate
+before('deploy:symlink', 'artisan:migrate');
+
+// // 缓存路由
+// after('artisan:config:cache', 'artisan:route:cache');
+
+// // 定义一个后置钩子，在 artisan:migrate 之后执行 es:migrate 任务
+// after('artisan:migrate', 'es:migrate');
