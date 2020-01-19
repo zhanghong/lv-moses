@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <router-link :to="'/shop/agent/create/'">
+      <router-link :to="'/shop/agent/create'">
         <el-button class="filter-item" type="primary" icon="el-icon-plus">
           {{ $t('table.add') }}
         </el-button>

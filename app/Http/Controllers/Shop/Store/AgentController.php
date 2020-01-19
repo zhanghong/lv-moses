@@ -20,9 +20,9 @@ class AgentController extends Controller
 
     public function store(AgentRequest $request, Shop $shop)
     {
-        $params = $this->filterRequestParams($request);
-        $agent = new Agent($params);
+        $agent = new Agent;
         $agent->shop()->associate($shop);
+        $agent->parseFill($request->all());
         $agent->save();
         return new AgentResource($agent);
     }
@@ -34,8 +34,8 @@ class AgentController extends Controller
 
     public function update(AgentRequest $request, Shop $shop, Agent $agent)
     {
-        $params = $this->filterRequestParams($request);
-        $agent->fill($params);
+        $params = $request->all();
+        $agent->parseFill($params);
         $agent->save();
         return new AgentResource($agent);
     }
@@ -66,27 +66,5 @@ class AgentController extends Controller
         }
 
         return ['code' => 200, 'message' => '字段值唯一'];
-    }
-
-    private function filterRequestParams($request)
-    {
-        $allow_names = [
-            'name',
-            'contact_name',
-            'contact_phone',
-            'contact_address',
-            'is_enabled',
-            'order',
-        ];
-        $params = $request->only($allow_names);
-
-        $skip_names = ['is_enabled', 'order'];
-        foreach ($skip_names as $key => $name) {
-            if (isset($params[$name]) && $params[$name] === '') {
-                // 使用数据库默认值或记录当前值
-                unset($params[$name]);
-            }
-        }
-        return $params;
     }
 }

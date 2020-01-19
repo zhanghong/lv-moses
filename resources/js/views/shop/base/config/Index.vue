@@ -137,6 +137,7 @@ export default {
       getShop(this.shop.id)
         .then(response => {
           this.shop = response.data;
+          this.isEdit = false;
         })
         .catch(error => {
           console.log(error.response.status);
@@ -167,7 +168,7 @@ export default {
       });
     },
     onCancel() {
-      this.isEdit = false;
+      this.fetchData();
     },
     beforeMainImageUpload(file) {
       const fileKbSize = file.size / 1024; // file KB size

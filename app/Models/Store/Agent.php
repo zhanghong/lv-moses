@@ -45,4 +45,22 @@ class Agent extends Model
     {
         return ['name'];
     }
+
+    /**
+     * 允许表单更新字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-17
+     * @return   array
+     */
+    public static function parseFields() {
+        return collect([
+            ['name' => 'name', 'type' => 'string', 'default' => ''],
+            ['name' => 'contact_name', 'type' => 'string', 'default' => ''],
+            ['name' => 'contact_phone', 'type' => 'string', 'default' => ''],
+            ['name' => 'contact_address', 'type' => 'string', 'default' => ''],
+            ['name' => 'is_enabled', 'type' => 'boolean'],
+            ['name' => 'order', 'type' => 'integer', 'default' => 0],
+        ]);
+    }
+
 }

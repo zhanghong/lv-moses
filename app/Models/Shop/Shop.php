@@ -154,7 +154,7 @@ class Shop extends Model
             throw new DisallowException('店铺信息不允许更新');
         }
 
-        DB::transaction(function () use ($data, $params) {
+        DB::transaction(function () use ($params) {
             // 过滤并赋值
             $this->parseFill($params);
 
