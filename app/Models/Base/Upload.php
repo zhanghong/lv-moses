@@ -125,29 +125,6 @@ class Upload extends Model
     }
 
     /**
-     * 排序作用域
-     * @Author   zhanghong(Laifuzi)
-     * @DateTime 2020-01-18
-     * @param    Query              $query Query实例
-     * @param    string             $order 排序方式
-     * @return   Query
-     */
-    public function scopeWithOrder($query, $order = '')
-    {
-        if ($order) {
-            $order = strtoupper($order);
-        }
-        switch ($order) {
-            case 'DESC':
-                $query->orderBy('order', 'DESC')->orderBY('id', 'DESC');
-            default:
-                $query->orderBy('order', 'ASC')->orderBY('id', 'ASC');
-                break;
-        }
-        return $query;
-    }
-
-    /**
      * 保存上传文件
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-18

@@ -22,6 +22,30 @@ class Model extends EloquentModel
     }
 
     /**
+     * 排序作用域
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-18
+     * @param    Query              $query Query实例
+     * @param    string             $order 排序方式
+     * @return   Query
+     */
+    public function scopeWithOrder($query, $order = '')
+    {
+        if ($order) {
+            $order = strtoupper($order);
+        }
+        switch ($order) {
+            case 'ASC':
+                $query->orderBy('order', 'ASC')->orderBY('id', 'ASC');
+                break;
+            default:
+                $query->orderBy('order', 'DESC')->orderBY('id', 'DESC');
+                break;
+        }
+        return $query;
+    }
+
+    /**
      * 实例是否允许被更新（业务逻辑）
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-09
@@ -237,12 +261,14 @@ class Model extends EloquentModel
                     }
                     break;
                 case 'int':
+                case 'integer':
                     $value = intval($value);
                     break;
                 case 'float':
                     $value = floatval($value);
                     break;
                 case 'bool':
+                case 'boolean':
                     $value = boolval($value);
                     break;
                 default:

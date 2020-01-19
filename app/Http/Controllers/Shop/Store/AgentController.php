@@ -14,8 +14,22 @@ class AgentController extends Controller
 {
     public function index(Shop $shop)
     {
-        $paginate = Agent::where('shop_id', $shop->id)->paginate();
+        $paginate = Agent::withOrder('DESC')->where('shop_id', $shop->id)->paginate();
         return AgentResource::collection($paginate);
+    }
+
+    public function list(Shop $shop)
+    {
+        $options =  Agent::withOrder('DESC')
+                    ->where('shop_id', $shop->id)
+                    ->get()
+                    ->map(function ($agent, $key) {
+                        return [
+                            'value' => $agent->id,
+                            'label' => $agent->name,
+                        ];
+                    });
+        return ['data' => $options];
     }
 
     public function store(AgentRequest $request, Shop $shop)

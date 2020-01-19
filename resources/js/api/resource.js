@@ -14,6 +14,13 @@ class Resource {
       params: query,
     });
   }
+  select(query) {
+    return request({
+      url: '/' + this.uri + '/list',
+      method: 'get',
+      params: query,
+    });
+  }
   get(id) {
     return request({
       url: '/' + this.uri + '/' + id,

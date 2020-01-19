@@ -47,6 +47,11 @@ class Store extends Model
         return $this->hasOne(Config::class);
     }
 
+    public function images()
+    {
+        return $this->morphMany(Upload::class, 'attachable')->where('attach_type', static::UPLOAD_TYPE_INTRO);
+    }
+
     /**
      * 允许表单更新字段列表
      * @Author   zhanghong(Laifuzi)
@@ -55,9 +60,9 @@ class Store extends Model
      */
     public static function parseFields() {
         return collect([
-            ['name' => 'agent_id', 'type' => 'integer', 'default' => 0],
-            ['name' => 'manager_id', 'type' => 'integer', 'default' => 0],
-            ['name' => 'area_id', 'type' => 'integer', 'default' => 0],
+            ['name' => 'agent_id', 'type' => 'int', 'default' => 0],
+            ['name' => 'manager_id', 'type' => 'int', 'default' => 0],
+            ['name' => 'area_id', 'type' => 'int', 'default' => 0],
             ['name' => 'name', 'type' => 'string', 'default' => ''],
             ['name' => 'auth_no', 'type' => 'string', 'default' => ''],
             // ['name' => 'full_address', 'type' => 'string', 'default' => ''],

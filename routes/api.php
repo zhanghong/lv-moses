@@ -49,6 +49,7 @@ Route::group(['middleware' => 'api'], function () {
         Route::delete('shops/{shop}/store/image/{image}', 'Shop\Store\ImageController@destroy');
 
         Route::post('shops/{shop}/store/agents/unique', 'Shop\Store\AgentController@unique');
+        Route::get('shops/{shop}/store/agents/list', 'Shop\Store\AgentController@list');
         Route::apiResource('shops/{shop}/store/agents', 'Shop\Store\AgentController');
     });
 });
