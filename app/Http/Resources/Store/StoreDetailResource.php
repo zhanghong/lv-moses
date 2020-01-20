@@ -16,7 +16,7 @@ class StoreDetailResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $store = [
             'id' => $this->id,
             'shop_id' => $this->shop_id,
             'agent_id' => $this->agent_id,
@@ -24,13 +24,26 @@ class StoreDetailResource extends JsonResource
             'name' => $this->name,
             'auth_no' => $this->auth_no,
             'area_id' => $this->area_id,
-            'area_full_name' => $this->area ? $this->area->full_name : '',
-            'staff_count' => 0,
+            'order' => $this->order,
+            'area_paths' => $this->area ? $this->area->locate_ids : [],
             'images' => UploadResource::collection($this->images),
             'can_update' => $this->can_update,
             'can_delete' => $this->can_delete,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];
+
+        $config = $this->config;
+        if ($config) {
+            $cfg = [
+                'contact_name' => $config->contact_name,
+                'contact_phone' => $config->contact_phone,
+                'address' => $config->address,
+                'zip_code' => $config->zip_code,
+                'staff_count' => $config->staff_count,
+            ];
+            $store = array_merge($store, $cfg);
+        }
+        return $store;
     }
 }

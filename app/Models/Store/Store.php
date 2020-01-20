@@ -6,6 +6,7 @@ use DB;
 use App\Models\Model;
 use App\Models\User\User;
 use App\Models\Shop\Shop;
+use App\Models\Base\Area;
 use App\Models\Base\Upload;
 use App\Exceptions\DisallowException;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,6 +41,11 @@ class Store extends Model
     public function manager()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
     }
 
     public function config()
@@ -86,9 +92,9 @@ class Store extends Model
         if (!$this->is_allow_update) {
             throw new DisallowException('店铺信息不允许更新');
         }
+        $this->parseFill($params);
 
         DB::transaction(function () use ($params) {
-            $this->parseFill($params);
             $this->save();
 
             Config::updateOrCreateByStore($params, $this);

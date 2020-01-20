@@ -11,14 +11,9 @@ class Config extends Model
 
     protected $table = 'store_configs';
 
-    protected $fillable = [
-        'contact_name',
-        'contact_phone',
-        'zip_code',
-        'staff_count',
-    ];
-
     protected $casts = [];
+
+    protected $fillable = ['store_id'];
 
     public function store()
     {
@@ -33,11 +28,12 @@ class Config extends Model
      */
     public static function parseFields() {
         return collect([
-            ['name' => 'store_id', 'type' => 'integer'],
+            ['name' => 'store_id', 'type' => 'int'],
             ['name' => 'contact_name', 'type' => 'string', 'default' => ''],
             ['name' => 'contact_phone', 'type' => 'string', 'default' => ''],
             ['name' => 'zip_code', 'type' => 'string', 'default' => ''],
-            ['name' => 'staff_count', 'type' => 'integer', 'default' => 0],
+            ['name' => 'address', 'type' => 'string', 'default' => ''],
+            ['name' => 'staff_count', 'type' => 'int', 'default' => 0],
         ]);
     }
 

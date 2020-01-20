@@ -12,6 +12,22 @@
         <el-input v-model.trim="postForm.name" placeholder="请输入经销商名称" />
       </el-form-item>
 
+      <el-form-item :label="fields.area_id" prop="area_id">
+        <area-select :init-value="postForm.area_paths" @change="onDistrictChanged" />
+      </el-form-item>
+
+      <el-form-item :label="fields.address" prop="address">
+        <el-input v-model.trim="postForm.address" placeholder="请输入详细地址" />
+      </el-form-item>
+
+      <el-form-item :label="fields.contact_phone" prop="contact_phone">
+        <el-input v-model.trim="postForm.contact_phone" placeholder="请输入联系电话" />
+      </el-form-item>
+
+      <el-form-item :label="fields.contact_name" prop="contact_name">
+        <el-input v-model.trim="postForm.contact_name" placeholder="请输入联系人姓名" />
+      </el-form-item>
+
       <el-form-item :label="fields.images" prop="images">
         <el-upload
           name="image"
@@ -29,6 +45,18 @@
           <i class="el-icon-plus" />
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
         </el-upload>
+      </el-form-item>
+
+      <el-form-item :label="fields.staff_count" prop="staff_count">
+        <el-input v-model.number="postForm.staff_count" placeholder="请输入员工人数" />
+      </el-form-item>
+
+      <el-form-item :label="fields.auth_no" prop="auth_no">
+        <el-input v-model.trim="postForm.auth_no" placeholder="请输入门店编号" />
+      </el-form-item>
+
+      <el-form-item :label="fields.order" prop="order">
+        <el-input v-model.number="postForm.order" placeholder="请输入排序ID" />
       </el-form-item>
 
       <el-form-item>
@@ -49,19 +77,21 @@
 <script>
 import Resource from '@/api/resource';
 import { checkNameUnique } from '@/api/shop/store/store';
+import AreaSelect from '@/components/AreaSelect';
 
 const defaultForm = {
+  agents: [],
   agent_id: '',
   name: '',
-  auth_no: '',
-  images: [],
-  agents: [],
   area_id: 0,
+  area_paths: [],
   address: '',
-  staff_count: '',
-  order: '',
-  contact_name: '',
   contact_phone: '',
+  contact_name: '',
+  images: [],
+  staff_count: '',
+  auth_no: '',
+  order: '',
 };
 
 const shop_id = 1;
@@ -70,6 +100,9 @@ const modelResource = new Resource('shops/' + shop_id + '/store/index');
 
 export default {
   name: 'Form',
+  components: {
+    AreaSelect,
+  },
   props: {
     isEdit: {
       type: Boolean,
@@ -114,22 +147,30 @@ export default {
         order: this.$t('store_item.order'),
       },
       rules: {
+        agent_id: [
+          { required: true, message: '请选择所属经销商', trigger: 'change' },
+        ],
         name: [
           { required: true, message: '门店名称 不能为空', trigger: 'blur' },
           { min: 2, max: 20, message: '门店名称 长度在 2 到 20 个字符', trigger: 'blur' },
           { validator: validateNameUnique, trigger: 'blur' },
         ],
-        // contact_name: [
-        //   { required: true, message: '联系人 不能为空', trigger: 'blur' },
-        //   { min: 2, max: 20, message: '联系人 长度在 2 到 20 个字符', trigger: 'blur' },
-        // ],
-        // contact_phone: [
-        //   { required: true, message: '联系方式 不能为空', trigger: 'blur' },
-        //   { max: 30, message: '联系方式 最大长度 30 个字符', trigger: 'blur' },
-        // ],
-        // contact_address: [
-        //   { max: 100, message: '联系地址 最大长度 100 个字符', trigger: 'blur' },
-        // ],
+        area_id: [
+          { required: true, message: '请选择所在地区', trigger: 'change' },
+        ],
+        address: [
+          { required: true, message: '详细地址 不能为空', trigger: 'blur' },
+          { min: 2, max: 50, message: '门店名称 长度在 2 到 20 个字符', trigger: 'blur' },
+        ],
+        contact_name: [
+          { min: 2, max: 20, message: '联系人 长度在 2 到 20 个字符', trigger: 'blur' },
+        ],
+        contact_phone: [
+          { max: 30, message: '联系方式 最大长度 30 个字符', trigger: 'blur' },
+        ],
+        order: [
+          { type: 'integer', message: '排序编号 只能输入整数', trigger: 'blur' },
+        ],
       },
     };
   },
@@ -146,8 +187,6 @@ export default {
       this.fetchData(id);
     } else {
       this.postForm = Object.assign({}, defaultForm);
-      console.log(this.postForm.images);
-      console.log('+++++++++++++++');
       this.loading = false;
     }
     this.tempRoute = Object.assign({}, this.$route);
@@ -193,7 +232,7 @@ export default {
     },
     handleImageUpload(res, file) {
       this.postForm.images.push(res.data);
-      console.log(this.postForm.images);
+      // console.log(this.postForm.images);
     },
     handleImageExceed(files, fileList) {
       this.$message.warning(`当前限制选择 ${this.imageLimit} 个文件`);
@@ -203,8 +242,13 @@ export default {
       this.dialogVisible = true;
     },
     handleImageRemove(file, fileList) {
-      console.log(file);
+      // console.log(file);
       this.postForm.images = fileList.splice(fileList.findIndex(item => item.id === file.id));
+    },
+    onDistrictChanged(val) {
+      if (val.length === 3) {
+        this.postForm.area_id = val[2];
+      }
     },
     onSubmit() {
       this.$refs.postForm.validate(valid => {
@@ -216,7 +260,7 @@ export default {
         data['image_ids'] = images.map((img) => {
           return img.id;
         });
-        console.log(agents);
+        console.log((agents === undefined));
         this.loading = true;
         if (id !== undefined) {
           modelResource.update(this.postForm.id, data)

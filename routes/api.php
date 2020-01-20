@@ -18,8 +18,8 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('auth/logout', 'AuthController@logout');
         });
 
-        Route::get('areas', 'Common\AreaController@index');
-        Route::get('areas/{area}', 'Common\AreaController@show');
+        Route::get('areas/districts', 'Common\AreaController@districts');
+        Route::get('areas/{area}', 'Common\AreaController@list');
 
         Route::apiResource('users', 'User\UserController');
         Route::get('users/{user}/permissions', 'User\UserController@permissions');

@@ -10,15 +10,15 @@ use App\Http\Resources\Base\AreaDetailResource;
 
 class AreaController extends Controller
 {
-    public function index(Request $request)
+    public function list(Request $request)
     {
         $parent_id = $request->get('pid');
         $areas = Area::where('parent_id', intval($parent_id))->get();
         return AreaListResource::collection($areas);
     }
 
-    public function show(Area $area)
+    public function districts()
     {
-        return new AreaDetailResource($area);
+        return ['data' => Area::optionsView()];
     }
 }

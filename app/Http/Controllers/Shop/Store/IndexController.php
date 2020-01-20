@@ -39,9 +39,9 @@ class IndexController extends Controller
             $store->updateInfo($request->all());
             return new DetailResource($store);
         } catch (\ErrorException $e) {
-            return response()->json(['message' => 'aaa'], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         } catch (\Exception $e) {
-            return response()->json(['message' => ''], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 

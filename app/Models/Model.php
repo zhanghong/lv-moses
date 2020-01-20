@@ -285,4 +285,81 @@ class Model extends EloquentModel
 
         return $data;
     }
+
+    /**
+     * 把列表转化成树状结构
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2018-11-16
+     * @param    array              $list 列表
+     * @return   array                   [description]
+     */
+    protected static function hierarchical($list){
+        $result = [];
+        foreach ($list as $key => $node) {
+            $node->setRelation('children', new Collection);
+            $result[$node->id] = $node;
+        }
+
+        $nestedKeys = [];
+
+        foreach($result as $key => $node) {
+            $parentKey = intval($node->parent_id);
+            $result[$parentKey]->children[] = $node;
+            $nestedKeys[] = $node->id;
+        }
+
+        foreach($nestedKeys as $key){
+          unset($result[$key]);
+        }
+
+        if(empty($result)){
+            return [];
+        }
+
+        $root_node = NULL;
+        foreach ($result as $key => $value) {
+            $root_node = $value;
+            break;
+        }
+        return $root_node->children;
+    }
+
+    /**
+     * 把数据列表转化成树状结构
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2019-01-16
+     * @param    array              $field_nodes 结点列表
+     * @return   array                           [description]
+     */
+    public static function convertListToTree($field_nodes){
+        $nodes = [
+            [
+                'children' => [],
+            ]
+        ];
+
+        foreach ($field_nodes as $index => $node) {
+            $node['children'] = [];
+            $nodes[$node['id']] = $node;
+        }
+
+        $nested_ids = [];
+        foreach ($nodes as $id => $node) {
+            if(!isset($node['id'])){
+                continue;
+            }
+            $nodes[$node['parent_id']]['children'][] = &$nodes[$id];
+            $nested_ids[] = $id;
+        }
+
+        foreach ($nested_ids as $key => $id) {
+            unset($nodes[$id]);
+        }
+
+        if(isset($nodes[0])){
+            $root_node = $nodes[0];
+            return $root_node['children'];
+        }
+        return $nodes;
+    }
 }

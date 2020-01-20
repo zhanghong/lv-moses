@@ -74,7 +74,7 @@ class Area extends Model
     }
 
     // 获取所有祖先类目的 ID 值
-    public function getPathIdsAttribute()
+    public function getFolderIdsAttribute()
     {
         // trim($str, '-') 将字符串两端的 - 符号去除
         // explode() 将字符串以 - 为分隔切割为数组
@@ -82,12 +82,19 @@ class Area extends Model
         return array_filter(explode('-', trim($this->path, '-')));
     }
 
+    public function getLocateIdsAttribute()
+    {
+        $ids = $this->folder_ids;
+        array_push($ids, strval($this->id));
+        return $ids;
+    }
+
     // 获取所有祖先类目并按层级排序
     public function getAncestorsAttribute()
     {
         return static::query()
             // 使用上面的访问器获取所有祖先类目 ID
-            ->whereIn('id', $this->path_ids)
+            ->whereIn('id', $this->folder_ids)
             // 按层级排序
             ->orderBy('level')
             ->get();
@@ -100,5 +107,27 @@ class Area extends Model
                     ->pluck('name') // 取出所有祖先类目的 name 字段作为一个数组
                     ->push($this->name) // 将当前类目的 name 字段值加到数组的末尾
                     ->implode('-'); // 用 - 符号将数组的值组装成一个字符串
+    }
+
+    public static function optionsView(int $level = 2)
+    {
+        $list = [];
+        $areas = static::select('id', 'parent_id', 'name')
+                        ->where('level', '<=', $level)
+                        ->get()
+                        ->all();
+        foreach ($areas as $idx => $item) {
+            $cid = strval($item->id);
+            $pid = strval($item->parent_id);
+            if ($pid === '') {
+                continue;
+            }
+            if (isset($list[$pid])) {
+                $list[$pid][$cid] = $item->name;
+            } else {
+                $list[$pid] = [$cid => $item->name];
+            }
+        }
+        return $list;
     }
 }
