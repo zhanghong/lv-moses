@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `expresses`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `expresses` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `creater_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
+  `editor_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
   `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `logo_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Logo 图片',
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-03  9:34:36
+-- Dump completed on 2020-02-03  9:55:05

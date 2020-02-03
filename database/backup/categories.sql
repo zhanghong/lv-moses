@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `categories`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `categories` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `creater_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
+  `editor_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `icon_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Icon URL',
   `parent_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '父ID',
@@ -61,7 +61,7 @@ DROP TABLE IF EXISTS `category_properties`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `category_properties` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `creater_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
+  `editor_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
   `category_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
   `name` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `type` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '属性类型',
@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS `category_selectors`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `category_selectors` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `creater_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
+  `editor_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `outer_name` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '来源名称',
   `outer_key` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '来源主键',
@@ -132,7 +132,7 @@ DROP TABLE IF EXISTS `category_property_selectors`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `category_property_selectors` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `creater_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
+  `editor_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
   `property_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '属性ID',
   `selector_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '选择项ID',
   `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序编号',
@@ -163,4 +163,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-03  9:33:55
+-- Dump completed on 2020-02-03  9:54:59

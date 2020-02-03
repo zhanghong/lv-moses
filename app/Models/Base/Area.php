@@ -6,7 +6,6 @@ use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
-use App\Models\User\User;
 
 class Area extends Model
 {
@@ -56,11 +55,6 @@ class Area extends Model
                     ->update(['is_directory' => 1]);
             }
         });
-    }
-
-    public function editor()
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function parent()

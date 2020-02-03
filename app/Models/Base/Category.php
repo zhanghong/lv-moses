@@ -6,7 +6,6 @@ use DB;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
-use App\Models\User\User;
 
 class Category extends Model
 {
@@ -52,11 +51,6 @@ class Category extends Model
                     ->update(['is_directory' => 1]);
             }
         });
-    }
-
-    public function creater()
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function parent()

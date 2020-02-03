@@ -3,8 +3,8 @@
 namespace App\Models\Base;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 use App\Models\Model;
-use App\Models\User\User;
 
 class Express extends Model
 {
@@ -23,9 +23,4 @@ class Express extends Model
     protected $casts = [
         'is_enabled' => 'boolean',
     ];
-
-    public function creater()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

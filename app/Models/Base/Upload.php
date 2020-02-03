@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 use App\Models\Model;
-use App\Models\User\User;
 use App\Exceptions\InvalidParameterException;
 
 class Upload extends Model
