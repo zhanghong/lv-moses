@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 class Model extends EloquentModel
 {
+    public const OUTER_FROM_WECHAT = 'wechat';
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
