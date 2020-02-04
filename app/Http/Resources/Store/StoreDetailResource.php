@@ -25,7 +25,7 @@ class StoreDetailResource extends JsonResource
             'auth_no' => $this->auth_no,
             'area_id' => $this->area_id,
             'order' => $this->order,
-            'area_paths' => $this->area ? $this->area->locate_ids : [],
+            'locate_paths' => $this->locate_area ? $this->locate_area->locate_ids : [],
             'images' => UploadResource::collection($this->images),
             'can_update' => $this->can_update,
             'can_delete' => $this->can_delete,
@@ -44,6 +44,11 @@ class StoreDetailResource extends JsonResource
             ];
             $store = array_merge($store, $cfg);
         }
+
+        $store['streets'] = $this->region_areas->map(function($area) {
+            return ['id' => strval($area->street_id), 'text' => $area->street->full_name];
+        });
+
         return $store;
     }
 }

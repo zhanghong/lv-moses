@@ -181,7 +181,7 @@ export default {
     staff_count: '员工数',
     auth_no: '门店编号',
     order: '排序编号',
-
+    streets: '所辖区域',
     agent_name: '经销商名称',
     area_full_name: '地址',
   },

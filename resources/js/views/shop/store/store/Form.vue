@@ -13,7 +13,7 @@
       </el-form-item>
 
       <el-form-item :label="fields.area_id" prop="area_id">
-        <area-select :init-value="postForm.area_paths" @change="onDistrictChanged" />
+        <area-select :init-value="postForm.locate_paths" @change="onDistrictChanged" />
       </el-form-item>
 
       <el-form-item :label="fields.address" prop="address">
@@ -26,6 +26,10 @@
 
       <el-form-item :label="fields.contact_name" prop="contact_name">
         <el-input v-model.trim="postForm.contact_name" placeholder="请输入联系人姓名" />
+      </el-form-item>
+
+      <el-form-item :label="fields.streets" prop="streets">
+        <region-select :list="postForm.streets" @change="onRegionChanged" />
       </el-form-item>
 
       <el-form-item :label="fields.images" prop="images">
@@ -78,13 +82,15 @@
 import Resource from '@/api/resource';
 import { checkNameUnique } from '@/api/shop/store/store';
 import AreaSelect from '@/components/AreaSelect';
+import RegionSelect from './components/RegionSelect';
 
 const defaultForm = {
   agents: [],
   agent_id: '',
   name: '',
   area_id: 0,
-  area_paths: [],
+  locate_paths: [],
+  streets: [],
   address: '',
   contact_phone: '',
   contact_name: '',
@@ -102,6 +108,7 @@ export default {
   name: 'Form',
   components: {
     AreaSelect,
+    RegionSelect,
   },
   props: {
     isEdit: {
@@ -131,6 +138,7 @@ export default {
       tempRoute: {},
       agents: [],
       postForm: Object.assign({}, defaultForm),
+      street_ids: [],
       dialogImageUrl: '',
       dialogVisible: false,
       imageLimit: 2,
@@ -143,6 +151,7 @@ export default {
         address: this.$t('store_item.address'),
         contact_name: this.$t('store_item.contact_name'),
         contact_phone: this.$t('store_item.contact_phone'),
+        streets: this.$t('store_item.streets'),
         staff_count: this.$t('store_item.staff_count'),
         order: this.$t('store_item.order'),
       },
@@ -197,6 +206,9 @@ export default {
         .get(id)
         .then(response => {
           this.postForm = response.data;
+          this.street_ids = this.postForm.streets.map(function(item) {
+            return item.id;
+          });
         })
         .catch(error => {
           console.log(error);
@@ -250,6 +262,9 @@ export default {
         this.postForm.area_id = val[2];
       }
     },
+    onRegionChanged(list) {
+      this.street_ids = list;
+    },
     onSubmit() {
       this.$refs.postForm.validate(valid => {
         if (!valid) {
@@ -260,6 +275,7 @@ export default {
         data['image_ids'] = images.map((img) => {
           return img.id;
         });
+        data['street_ids'] = this.street_ids;
         console.log((agents === undefined));
         this.loading = true;
         if (id !== undefined) {

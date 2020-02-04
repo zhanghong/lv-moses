@@ -19,6 +19,7 @@ Route::group(['middleware' => 'api'], function () {
         });
 
         Route::get('areas/districts', 'Common\AreaController@districts');
+        Route::get('areas/streets', 'Common\AreaController@streets');
         Route::get('areas/{area}', 'Common\AreaController@list');
 
         Route::apiResource('users', 'User\UserController');

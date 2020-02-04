@@ -6,8 +6,9 @@ use DB;
 use App\Models\Model;
 use App\Models\User\User;
 use App\Models\Shop\Shop;
-use App\Models\Base\Area;
+use App\Models\Base\Area as BaseArea;
 use App\Models\Base\Upload;
+use App\Models\Store\Area as StoreArea;
 use App\Exceptions\DisallowException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -43,9 +44,14 @@ class Store extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function area()
+    public function locate_area()
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(BaseArea::class, 'area_id');
+    }
+
+    public function region_areas()
+    {
+        return $this->hasMany(StoreArea::class);
     }
 
     public function config()
@@ -71,7 +77,6 @@ class Store extends Model
             ['name' => 'area_id', 'type' => 'int', 'default' => 0],
             ['name' => 'name', 'type' => 'string', 'default' => ''],
             ['name' => 'auth_no', 'type' => 'string', 'default' => ''],
-            // ['name' => 'full_address', 'type' => 'string', 'default' => ''],
             ['name' => 'longitude', 'type' => 'float'],
             ['name' => 'latitude', 'type' => 'float'],
             ['name' => 'work_start_time', 'type' => 'time'],
@@ -96,6 +101,8 @@ class Store extends Model
 
         DB::transaction(function () use ($params) {
             $this->save();
+
+            StoreArea::saveManageStreets($params['street_ids'], $this);
 
             Config::updateOrCreateByStore($params, $this);
 
