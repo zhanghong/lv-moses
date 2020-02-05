@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Base;
+namespace App\Models\Category;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
 
-class CategorySelector extends Model
+class Selector extends Model
 {
     use SoftDeletes;
 

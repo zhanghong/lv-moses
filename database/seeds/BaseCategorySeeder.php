@@ -5,7 +5,7 @@ use Illuminate\Database\Seeder;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ConnectException;
-use App\Models\Base\Category;
+use App\Models\Category\Category;
 
 class BaseCategorySeeder extends Seeder
 {

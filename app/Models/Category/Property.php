@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Models\Base;
+namespace App\Models\Category;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
 
-class CategoryProperty extends Model
+class Property extends Model
 {
     use SoftDeletes;
 
@@ -22,6 +22,6 @@ class CategoryProperty extends Model
 
     public function selectors()
     {
-        return $this->belongsToMany(CategorySelectors::class, 'category_property_selectors');
+        return $this->hasMany(Selector::class);
     }
 }

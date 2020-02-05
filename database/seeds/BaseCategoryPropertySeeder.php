@@ -6,10 +6,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ConnectException;
 
-use App\Models\Base\Category;
-use App\Models\Base\CategoryProperty;
-use App\Models\Base\CategorySelector;
-use App\Models\Base\CategoryPropertySelector;
+use App\Models\Category\Category;
+use App\Models\Category\Property;
+use App\Models\Category\Selector;
+use App\Models\Category\PropertySelector;
 
 class BaseCategoryPropertySeeder extends Seeder
 {
@@ -20,14 +20,14 @@ class BaseCategoryPropertySeeder extends Seeder
      */
     public function run()
     {
-        Category::where('level', 3)->orderBy('id', 'ASC')->each(function($category) {
-            echo(' catetory id: '.$category->id);
-            // $file_name = 'files/wx_category_property.json';
-            // $content = file_get_contents(base_path($file_name));
-            $content = $this->getWechatCategoryContent($category);
-            $this->saveContentData($category, $content);
-            sleep(1);
-        });
+        // Category::where('level', 3)->orderBy('id', 'ASC')->each(function($category) {
+        //     echo(' catetory id: '.$category->id);
+        //     // $file_name = 'files/wx_category_property.json';
+        //     // $content = file_get_contents(base_path($file_name));
+        //     $content = $this->getWechatCategoryContent($category);
+        //     $this->saveContentData($category, $content);
+        //     sleep(1);
+        // });
 
         $this->bindPropertySelector();
     }
@@ -109,8 +109,8 @@ class BaseCategoryPropertySeeder extends Seeder
 
         $properties = $data[0]['field_list'] ?? [] ;
         foreach ($properties as $key => $item) {
-            $property = CategoryProperty::firstOrNew([
-                'outer_name' => CategoryProperty::OUTER_FROM_WECHAT,
+            $property = Property::firstOrNew([
+                'outer_name' => Property::OUTER_FROM_WECHAT,
                 'outer_key' => strval($item['id']),
             ]);
 
@@ -120,15 +120,17 @@ class BaseCategoryPropertySeeder extends Seeder
             $property->outer_selector_ids = $item['property_selector_id_list'];
             $property->category_id = $category->id;
             $property->outer_cid = $category->outer_key;
+            $property->shop_id = 0;
             $property->save();
         }
 
         $selectors = $data[1]['id_list'] ?? [] ;
         foreach ($selectors as $key => $item) {
-            $selector = CategorySelector::firstOrNew([
-                'outer_name' => CategorySelector::OUTER_FROM_WECHAT,
+            $selector = Selector::firstOrNew([
+                'outer_name' => Selector::OUTER_FROM_WECHAT,
                 'outer_key' => strval($item['id']),
             ]);
+            $selector->shop_id = 0;
             $selector->name = $item['name'];
             $selector->save();
         }
@@ -143,7 +145,7 @@ class BaseCategoryPropertySeeder extends Seeder
      */
     private function bindPropertySelector()
     {
-        CategoryProperty::all()->each(function ($property) {
+        Property::all()->each(function ($property) {
             echo(' property id: '.$property->id);
             if (empty($property->outer_selector_ids)) {
                 $outer_selector_ids = [];
@@ -154,26 +156,40 @@ class BaseCategoryPropertySeeder extends Seeder
             $selector_ids = [];
             if (!empty($outer_selector_ids)){
                 $field_str = implode(',', $outer_selector_ids);
-                $selector_ids = CategorySelector::whereIn('outer_key', $outer_selector_ids)
+                $selector_ids = Selector::whereIn('outer_key', $outer_selector_ids)
                                         ->orderByRaw(DB::raw("FIELD(outer_key, $field_str)"))
                                         ->get()
-                                        ->map(function($selector){
+                                        ->map(function($selector) {
                                             return $selector->id;
                                         })->toArray();
             }
 
+            if (count($outer_selector_ids) != count($selector_ids)) {
+                dd([
+                    'pid' => $property->id,
+                    'outer' => $outer_selector_ids,
+                    'ids' => $selector_ids,
+                ]);
+            }
+
+            if (!empty($selector_ids)) {
+                Selector::whereIn('id', $selector_ids)
+                            ->update(['property_id' => $property->id]);
+            }
+
             foreach ($selector_ids as $key => $sid) {
-                $item = CategoryPropertySelector::firstOrNew([
+                $item = PropertySelector::firstOrNew([
                     'property_id' => $property->id,
                     'selector_id' => $sid,
                 ]);
+                $item->shop_id = 0;
                 $item->order = $key + 1;
                 $item->save();
             }
 
-            $delete_query = CategoryPropertySelector::where('property_id', $property->id);
+            $delete_query = PropertySelector::where('property_id', $property->id);
             if ($selector_ids) {
-                $delete_query->whereNotIn('id', $selector_ids);
+                $delete_query->whereNotIn('selector_id', $selector_ids);
                 $property->value_ids = implode(',', $selector_ids);
             } else {
                 $property->value_ids = '';

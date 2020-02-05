@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Base;
+namespace App\Models\Category;
 
 use App\Models\Model;
 
-class CategoryPropertySelector extends Model
+class PropertySelector extends Model
 {
     protected $table = 'category_property_selectors';
 

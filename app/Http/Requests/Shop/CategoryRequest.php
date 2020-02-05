@@ -4,8 +4,8 @@ namespace App\Http\Requests\Shop;
 
 use Illuminate\Validation\Rule;
 use App\Http\Requests\FormRequest;
-use App\Models\Shop\Category;
-use App\Models\Base\Category as BaseCategory;
+use App\Models\Shop\Category as ShopCategory;
+use App\Models\Category\Category as BaseCategory;
 
 class CategoryRequest extends FormRequest
 {
@@ -52,7 +52,7 @@ class CategoryRequest extends FormRequest
                 'min:0',
                 function ($attribute, $value, $fail) {
                     if (intval($value) > 0) {
-                        $parent = Category::find($value);
+                        $parent = ShopCategory::find($value);
                         if (!$parent || $parent->shop_id != $this->route('shop')->id) {
                             return $fail('上级分类不存在');
                         } else if ($parent->level > 0) {
