@@ -29,7 +29,6 @@ class CreateBaseCategoryPropertiesTable extends Migration
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->timestamps();
             $table->softDeletes();
-            $table->index(['category_id', 'order'], 'cid-order');
         });
     }
 

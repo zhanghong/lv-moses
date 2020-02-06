@@ -52,5 +52,8 @@ Route::group(['middleware' => 'api'], function () {
         Route::post('shops/{shop}/store/agents/unique', 'Shop\Store\AgentController@unique');
         Route::get('shops/{shop}/store/agents/list', 'Shop\Store\AgentController@list');
         Route::apiResource('shops/{shop}/store/agents', 'Shop\Store\AgentController');
+
+        // 商品管理
+        Route::apiResource('shops/product/categories', 'Shop\Product\CategoryController')->only(['index', 'show']);
     });
 });

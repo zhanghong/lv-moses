@@ -20,16 +20,14 @@ class BaseCategoryPropertySeeder extends Seeder
      */
     public function run()
     {
-        // Category::where('level', 3)->orderBy('id', 'ASC')->each(function($category) {
-        //     echo(' catetory id: '.$category->id);
-        //     // $file_name = 'files/wx_category_property.json';
-        //     // $content = file_get_contents(base_path($file_name));
-        //     $content = $this->getWechatCategoryContent($category);
-        //     $this->saveContentData($category, $content);
-        //     sleep(1);
-        // });
-
-        $this->bindPropertySelector();
+        Category::where('level', 3)->where('id', '>', 709)->orderBy('id', 'ASC')->each(function($category) {
+            echo(' catetory id: '.$category->id);
+            // $file_name = 'files/wx_category_property.json';
+            // $content = file_get_contents(base_path($file_name));
+            $content = $this->getWechatCategoryContent($category);
+            $this->saveContentData($category, $content);
+            sleep(1);
+        });
     }
 
     /**
@@ -44,11 +42,12 @@ class BaseCategoryPropertySeeder extends Seeder
         $appid = 'wx362ccbae95e206c5';
         $jar = new CookieJar;
         $cookies = CookieJar::fromArray([
-                            'ad_session_searchzone' => 'gm_NMJ9ERRLkW_zivmN7afCou_ZjDoOv',
+                            'ad_session_searchzone' => 'vi9FeQmIMkAQF0KKkn9vc7gmzmqC5I4c',
                             'appid_searchzone' => $appid,
                             'data_bizuin' => '3001033114',
-                            'data_ticket    ' => '00ePhANA7EIk1zqBqyWIOds2m63SK0qlE',
-                            'mmsearch_flag' => 'C06F544A54E573E2026B7B62AA7DF05E754D789F5A8573978C23A8C8D707666A',
+
+                            'data_ticket' => 'GNbLDAUqFy2KDa4f6Y5DqikwyX5WGMKaX3YRlZa9VAzDSOrQaaFwd',
+                            'mmsearch_flag' => '4B945849F4DDD89A9416007496A0571FC42245D6A8A4AC27C016526B61FA75DE    ',
                             'plugin_id' => 'searchzone',
                         ], 'wsad.weixin.qq.com');
 
@@ -107,25 +106,11 @@ class BaseCategoryPropertySeeder extends Seeder
         // json['data'] 是二维数组
         $data = $json['data'] ?? [[], []] ;
 
-        $properties = $data[0]['field_list'] ?? [] ;
-        foreach ($properties as $key => $item) {
-            $property = Property::firstOrNew([
-                'outer_name' => Property::OUTER_FROM_WECHAT,
-                'outer_key' => strval($item['id']),
-            ]);
-
-            $property->name = $item['property_name'];
-            $property->type = $item['property_type'];
-            $property->choice = $item['property_choice'];
-            $property->outer_selector_ids = $item['property_selector_id_list'];
-            $property->category_id = $category->id;
-            $property->outer_cid = $category->outer_key;
-            $property->shop_id = 0;
-            $property->save();
-        }
-
         $selectors = $data[1]['id_list'] ?? [] ;
         foreach ($selectors as $key => $item) {
+            if (in_array($item['id'], ['6235387', '6235388', '6235389', '6235390'])) {
+                continue;
+            }
             $selector = Selector::firstOrNew([
                 'outer_name' => Selector::OUTER_FROM_WECHAT,
                 'outer_key' => strval($item['id']),
@@ -134,19 +119,45 @@ class BaseCategoryPropertySeeder extends Seeder
             $selector->name = $item['name'];
             $selector->save();
         }
-        return ;
-    }
 
-    /**
-     * 保存属性和属性值关联信息
-     * @Author   zhanghong(Laifuzi)
-     * @DateTime 2020-02-03
-     * @return   null
-     */
-    private function bindPropertySelector()
-    {
-        Property::all()->each(function ($property) {
-            echo(' property id: '.$property->id);
+        $properties = $data[0]['field_list'] ?? [] ;
+        foreach ($properties as $key => $item) {
+            if (in_array($item['id'], ['2069615', '2069616'])) {
+                continue;
+            }
+            $property = Property::firstOrNew([
+                'outer_name' => Property::OUTER_FROM_WECHAT,
+                'outer_key' => strval($item['id']),
+            ]);
+
+            $property->name = $item['property_name'];
+            switch (intval($item['property_type'])) {
+                case 1:
+                    $property->type = Property::TYPE_PARAMS;
+                    break;
+                case 2:
+                    $property->type = Property::TYPE_STANDARDS;
+                    break;
+                default:
+                    $property->type = $item['property_type'];
+                    break;
+            }
+            switch (intval($item['property_choice'])) {
+                case 1:
+                    $property->choice = Property::CHOICE_SELECT;
+                    break;
+                case 2:
+                    $property->choice = Property::CHOICE_CHECKBOX;
+                    break;
+                default:
+                    $property->choice = $item['property_choice'];
+                    break;
+            }
+            $property->outer_selector_ids = $item['property_selector_id_list'];
+            $property->outer_cid = $category->outer_key;
+            $property->shop_id = 0;
+            $property->save();
+
             if (empty($property->outer_selector_ids)) {
                 $outer_selector_ids = [];
             } else {
@@ -177,27 +188,79 @@ class BaseCategoryPropertySeeder extends Seeder
                             ->update(['property_id' => $property->id]);
             }
 
-            foreach ($selector_ids as $key => $sid) {
-                $item = PropertySelector::firstOrNew([
-                    'property_id' => $property->id,
-                    'selector_id' => $sid,
-                ]);
-                $item->shop_id = 0;
-                $item->order = $key + 1;
-                $item->save();
-            }
-
-            $delete_query = PropertySelector::where('property_id', $property->id);
-            if ($selector_ids) {
-                $delete_query->whereNotIn('selector_id', $selector_ids);
-                $property->value_ids = implode(',', $selector_ids);
-            } else {
-                $property->value_ids = '';
-            }
-
-            $delete_query->delete();
+            $property->value_ids = implode(',', $selector_ids);
             $property->save();
-        });
+
+
+            $property->categories()->syncWithoutDetaching([
+                $category->id => ['editor_id' => 0, 'order' => $key + 1]
+            ]);
+        }
+
         return ;
     }
+
+    // /**
+    //  * 保存属性和属性值关联信息
+    //  * @Author   zhanghong(Laifuzi)
+    //  * @DateTime 2020-02-03
+    //  * @return   null
+    //  */
+    // private function bindPropertySelector()
+    // {
+    //     Property::all()->each(function ($property) {
+    //         echo(' property id: '.$property->id);
+    //         if (empty($property->outer_selector_ids)) {
+    //             $outer_selector_ids = [];
+    //         } else {
+    //             $outer_selector_ids = explode(',', $property->outer_selector_ids);
+    //         }
+
+    //         $selector_ids = [];
+    //         if (!empty($outer_selector_ids)){
+    //             $field_str = implode(',', $outer_selector_ids);
+    //             $selector_ids = Selector::whereIn('outer_key', $outer_selector_ids)
+    //                                     ->orderByRaw(DB::raw("FIELD(outer_key, $field_str)"))
+    //                                     ->get()
+    //                                     ->map(function($selector) {
+    //                                         return $selector->id;
+    //                                     })->toArray();
+    //         }
+
+    //         if (count($outer_selector_ids) != count($selector_ids)) {
+    //             dd([
+    //                 'pid' => $property->id,
+    //                 'outer' => $outer_selector_ids,
+    //                 'ids' => $selector_ids,
+    //             ]);
+    //         }
+
+    //         if (!empty($selector_ids)) {
+    //             Selector::whereIn('id', $selector_ids)
+    //                         ->update(['property_id' => $property->id]);
+    //         }
+
+    //         foreach ($selector_ids as $key => $sid) {
+    //             $item = PropertySelector::firstOrNew([
+    //                 'property_id' => $property->id,
+    //                 'selector_id' => $sid,
+    //             ]);
+    //             $item->shop_id = 0;
+    //             $item->order = $key + 1;
+    //             $item->save();
+    //         }
+
+    //         $delete_query = PropertySelector::where('property_id', $property->id);
+    //         if ($selector_ids) {
+    //             $delete_query->whereNotIn('selector_id', $selector_ids);
+    //             $property->value_ids = implode(',', $selector_ids);
+    //         } else {
+    //             $property->value_ids = '';
+    //         }
+
+    //         $delete_query->delete();
+    //         $property->save();
+    //     });
+    //     return ;
+    // }
 }
