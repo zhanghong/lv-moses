@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Shop;
+namespace App\Http\Resources\Product;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BrandResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,15 @@ class BrandResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'shop_id' => $this->shop_id,
             'name' => $this->name,
-            'logo_url' => $this->logo_url,
-            'description' => $this->description,
+            'icon_url' => $this->icon_url,
+            'parent_id' => $this->parent_id,
+            'is_directory' => $this->is_directory,
+            'level' => $this->level,
+            'path' => $this->path,
+            'order' => $this->order,
+            'is_enabled' => $this->is_enabled,
             'can_update' => $this->can_update,
             'can_delete' => $this->can_delete,
             'created_at' => $this->created_at->toDateTimeString(),

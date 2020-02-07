@@ -30,8 +30,7 @@ Route::group(['middleware' => 'api'], function () {
         Route::get('roles/{role}/permissions', 'Role\RoleController@permissions');
         Route::apiResource('permissions', 'Role\PermissionController');
 
-        Route::apiResource('shops/{shop}/base/brands', 'Shop\Base\BrandController');
-        Route::apiResource('shops/{shop}/base/categories', 'Shop\Base\CategoryController');
+
 
         Route::patch('shops/{shop}/base/index', 'Shop\Base\IndexController@update');
         Route::get('shops/{shop}/base/index', 'Shop\Base\IndexController@index');
@@ -53,9 +52,14 @@ Route::group(['middleware' => 'api'], function () {
         Route::get('shops/{shop}/store/agents/list', 'Shop\Store\AgentController@list');
         Route::apiResource('shops/{shop}/store/agents', 'Shop\Store\AgentController');
 
-        // 商品类目
+        // 基础类目
         Route::apiResource('shops/{shop}/category/index', 'Shop\Category\IndexController', ['parameters' => ['index' => 'category']])->only(['index', 'show']);
 
+        // 商品模块
+        // 商品分类
+        Route::apiResource('shops/{shop}/product/categories', 'Shop\Product\CategoryController');
+        // 商品品牌
+        Route::apiResource('shops/{shop}/product/brands', 'Shop\Product\BrandController');
         // 商品管理
         Route::apiResource('shops/{shop}/product/index', 'Shop\Product\IndexController', ['parameters' => ['index' => 'product']]);
     });

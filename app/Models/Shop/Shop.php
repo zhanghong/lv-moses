@@ -45,11 +45,6 @@ class Shop extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function editor()
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function manager()
     {
         return $this->belongsTo(User::class);
@@ -58,16 +53,6 @@ class Shop extends Model
     public function config()
     {
         return $this->hasOne(Config::class);
-    }
-
-    public function brands()
-    {
-        return $this->hasMany(Brand::class);
-    }
-
-    public function categories()
-    {
-        return $this->hasMany(Category::class);
     }
 
     /**

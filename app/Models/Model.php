@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use App\Exceptions\LogicException;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
@@ -16,6 +17,19 @@ class Model extends EloquentModel
 
         $fields = static::fillableFieldNames();
         $this->fillable($fields);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // self::saving(function (EloquentModel $model) {
+        //     $user_id = 0;
+        //     // if (Auth::user()) {
+        //     //     $user_id = Auth::user()->id;
+        //     // }
+        //     // $model->editor_id = $user_id;
+        // }
     }
 
     public function editor()

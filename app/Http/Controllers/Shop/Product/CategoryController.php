@@ -3,29 +3,48 @@
 namespace App\Http\Controllers\Shop\Product;
 
 use Illuminate\Http\Request;
-use App\Models\Category\Category;
+use App\Models\Shop\Shop;
+use App\Models\Product\Category;
+use App\Http\Requests\Product\CategoryRequest;
+use App\Http\Resources\Product\CategoryResource;
 use App\Http\Controllers\Shop\Controller;
-use App\Http\Resources\Product\CategoryDetailResource;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request)
+    public function index(Shop $shop)
     {
-        $list = [];
-        $pid = $request->get('pid');
-        $pid = intval($pid);
-        if ($pid > 0) {
-            $list = Category::selectByParentId($pid)
-                            ->mapWithKeys(function ($cat) {
-                                return [$cat->id => $cat->name];
-                            });
-        }
-
-        return ['data' => $list, 'code' => 200];
+        $paginate = Category::withOrder('ASC')
+                        ->where('shop_id', $shop->id)
+                        ->paginate();
+        return CategoryResource::collection($paginate);
     }
 
-    public function show(Category $category, Request $request)
+    public function store(CategoryRequest $request, Shop $shop)
     {
-        return new CategoryDetailResource($category);
+        $params = $request->all();
+        $category = new Category;
+        $category->parseFill($params);
+        $category->shop()->associate($shop);
+        $category->save();
+        return new CategoryResource($category);
+    }
+
+    public function show(Shop $shop, Category $category)
+    {
+        return new CategoryResource($category);
+    }
+
+    public function update(CategoryRequest $request, Shop $shop, Category $category)
+    {
+        $params = $request->all();
+        $category->parseFill($params);
+        $category->save();
+        return new CategoryResource($category);
+    }
+
+    public function destroy(Shop $shop, Category $category)
+    {
+        $category->delete();
+        return $this->responseData([]);
     }
 }
