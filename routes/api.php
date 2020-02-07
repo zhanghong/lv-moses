@@ -53,7 +53,10 @@ Route::group(['middleware' => 'api'], function () {
         Route::get('shops/{shop}/store/agents/list', 'Shop\Store\AgentController@list');
         Route::apiResource('shops/{shop}/store/agents', 'Shop\Store\AgentController');
 
+        // 商品类目
+        Route::apiResource('shops/{shop}/category/index', 'Shop\Category\IndexController', ['parameters' => ['index' => 'category']])->only(['index', 'show']);
+
         // 商品管理
-        Route::apiResource('shops/product/categories', 'Shop\Product\CategoryController')->only(['index', 'show']);
+        Route::apiResource('shops/{shop}/product/index', 'Shop\Product\IndexController', ['parameters' => ['index' => 'product']]);
     });
 });

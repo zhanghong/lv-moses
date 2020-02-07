@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Product;
+namespace App\Http\Resources\Category;
 
 use App\Models\Category\Property;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryDetailResource extends JsonResource
+class CategoryShopDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,9 +19,14 @@ class CategoryDetailResource extends JsonResource
         $standards = [];
         $params = [];
 
-        $properties = Property::with('selectors')->where('shop_id', 0)->whereHas('cat_mids', function (Builder $query) {
+        $query = Property::with('selectors')->where('shop_id', 0);
+        if ($request->route('shop')) {
+            $query = $query->whereOr('shop_id', $request->route('shop')->id);
+        }
+        $properties = $query->whereHas('cat_mids', function (Builder $query) {
             return $query->where('category_id', $this->id);
         })->get();
+
         foreach ($properties as $key => $prop) {
             $resource = new CategoryPropertyResource($prop);
             switch ($prop->type) {
