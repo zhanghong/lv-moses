@@ -13,11 +13,10 @@ class CreateShopCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('shop_categories', function (Blueprint $table) {
+        Schema::create('product_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('editor_id')->default(0)->nullable(false)->comment('更新用户ID');
             $table->unsignedBigInteger('shop_id')->default(0)->nullable(false)->comment('店铺ID');
-            $table->unsignedBigInteger('category_id')->default(0)->nullable(false)->comment('系统分类ID');
             $table->string('name', 20)->default('')->nullable(false)->comment('名称');
             $table->string('icon_url')->default('')->comment('Icon URL');
             $table->unsignedBigInteger('parent_id')->default(0)->nullable(false)->comment('父ID');
@@ -38,6 +37,6 @@ class CreateShopCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shop_categories');
+        Schema::dropIfExists('product_categories');
     }
 }

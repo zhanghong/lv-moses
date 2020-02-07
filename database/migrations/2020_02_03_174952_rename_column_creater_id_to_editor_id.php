@@ -32,10 +32,6 @@ class RenameColumnCreaterIdToEditorId extends Migration
         Schema::table('expresses', function (Blueprint $table) {
             $table->renameColumn('creater_id', 'editor_id')->comment('最后更新用户ID');
         });
-
-        Schema::table('shop_uploads', function (Blueprint $table) {
-            $table->renameColumn('creater_id', 'editor_id')->comment('最后更新用户ID');
-        });
     }
 
     /**
@@ -62,10 +58,6 @@ class RenameColumnCreaterIdToEditorId extends Migration
         });
 
         Schema::table('expresses', function (Blueprint $table) {
-            $table->renameColumn('editor_id', 'creater_id')->comment('创建管理员ID');
-        });
-
-        Schema::table('shop_uploads', function (Blueprint $table) {
             $table->renameColumn('editor_id', 'creater_id')->comment('创建管理员ID');
         });
     }

@@ -13,13 +13,15 @@ class CreateShopBrandsTable extends Migration
      */
     public function up()
     {
-        Schema::create('shop_brands', function (Blueprint $table) {
+        Schema::create('product_brands', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('editor_id')->default(0)->nullable(false)->comment('更新用户ID');
             $table->unsignedBigInteger('shop_id')->default(0)->nullable(false)->comment('店铺ID');
             $table->string('name', 50)->default('')->nullable(false)->comment('名称');
             $table->string('logo_url')->default('')->comment('Logo URL');
             $table->string('description')->default('')->comment('品牌介绍');
+            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +34,6 @@ class CreateShopBrandsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shop_brands');
+        Schema::dropIfExists('product_brands');
     }
 }
