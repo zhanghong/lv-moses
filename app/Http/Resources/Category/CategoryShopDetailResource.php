@@ -19,9 +19,15 @@ class CategoryShopDetailResource extends JsonResource
         $standards = [];
         $params = [];
 
-        $query = Property::with('selectors')->where('shop_id', 0);
-        if ($request->route('shop')) {
-            $query = $query->whereOr('shop_id', $request->route('shop')->id);
+        $query = Property::with('selectors');
+        $shop = $request->route('shop');
+        if ($shop) {
+            $query = $query->where(function($query) use ($shop) {
+                $query->where('shop_id', 0)
+                    ->orWhere('shop_id', $shop->id);
+            });
+        } else {
+            $query = $query->where('shop_id', 0);
         }
         $properties = $query->whereHas('cat_mids', function (Builder $query) {
             return $query->where('category_id', $this->id);

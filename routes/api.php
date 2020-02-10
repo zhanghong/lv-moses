@@ -62,5 +62,11 @@ Route::group(['middleware' => 'api'], function () {
         Route::apiResource('shops/{shop}/product/brands', 'Shop\Product\BrandController');
         // 商品管理
         Route::apiResource('shops/{shop}/product/index', 'Shop\Product\IndexController', ['parameters' => ['index' => 'product']]);
+        // 商品规格
+        Route::post('shops/{shop}/product/standards', 'Shop\Product\StandardController@store');
+        Route::post('shops/{shop}/product/standard_values/{property}', 'Shop\Product\StandardValueController@store');
+        // 商品参数
+        Route::post('shops/{shop}/product/params', 'Shop\Product\ParamController@store');
+        Route::post('shops/{shop}/product/param_values/{property}', 'Shop\Product\ParamValueController@store');
     });
 });
