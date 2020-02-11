@@ -31,7 +31,7 @@ CREATE TABLE `categories` (
   `is_directory` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否有子节点',
   `level` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '层级',
   `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '祖先IDs',
-  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序编号',
+  `order` int(11) NOT NULL DEFAULT '99' COMMENT '排序编号',
   `is_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `category_properties` (
   `outer_key` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '来源主键',
   `outer_cid` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '来源分类ID',
   `outer_selector_ids` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '属性值IDs',
-  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序编号',
+  `order` int(11) NOT NULL DEFAULT '99' COMMENT '排序编号',
   `is_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE `category_property` (
   `editor_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '最后更新用户ID',
   `category_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '分类ID',
   `property_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '属性ID',
-  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序编号',
+  `order` int(11) NOT NULL DEFAULT '99' COMMENT '排序编号',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -136,7 +136,7 @@ CREATE TABLE `category_selectors` (
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `outer_name` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '来源名称',
   `outer_key` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '来源主键',
-  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序编号',
+  `order` int(11) NOT NULL DEFAULT '99' COMMENT '排序编号',
   `is_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -164,4 +164,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-06  6:17:16
+-- Dump completed on 2020-02-10  7:07:27

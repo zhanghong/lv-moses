@@ -28,7 +28,7 @@ CREATE TABLE `expresses` (
   `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `logo_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Logo 图片',
-  `order` int(11) NOT NULL DEFAULT '0' COMMENT '排序编号',
+  `order` int(11) NOT NULL DEFAULT '99' COMMENT '排序编号',
   `is_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
