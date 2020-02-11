@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Store\Store;
+
 class CreateStoresTable extends Migration
 {
     /**
@@ -30,7 +32,7 @@ class CreateStoresTable extends Migration
             $table->time('work_start_time')->default('00:00:00')->nullable(false)->comment('是否启用');
             $table->time('work_end_time')->default('24:00:00')->nullable(false)->comment('是否启用');
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
-            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->integer('order')->default(Store::ORDER_DEFAULT)->nullable(false)->comment('排序编号');
             $table->timestamps();
             $table->softDeletes();
             $table->index(['shop_id'], 'shop-id');

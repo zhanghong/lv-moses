@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Product\Brand;
+
 class CreateShopBrandsTable extends Migration
 {
     /**
@@ -20,7 +22,7 @@ class CreateShopBrandsTable extends Migration
             $table->string('name', 50)->default('')->nullable(false)->comment('名称');
             $table->string('logo_url')->default('')->comment('Logo URL');
             $table->string('description')->default('')->comment('品牌介绍');
-            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->integer('order')->default(Brand::ORDER_DEFAULT)->nullable(false)->comment('排序编号');
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->timestamps();
             $table->softDeletes();

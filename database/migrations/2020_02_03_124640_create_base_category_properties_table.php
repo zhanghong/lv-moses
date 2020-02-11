@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Category\Property;
+
 class CreateBaseCategoryPropertiesTable extends Migration
 {
     /**
@@ -25,7 +27,7 @@ class CreateBaseCategoryPropertiesTable extends Migration
             $table->string('outer_key', 10)->default('')->comment('来源主键');
             $table->string('outer_cid', 10)->default('')->comment('来源分类ID');
             $table->string('outer_selector_ids', 1000)->default('')->comment('属性值IDs');
-            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->integer('order')->default(Property::ORDER_DEFAULT)->nullable(false)->comment('排序编号');
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->timestamps();
             $table->softDeletes();

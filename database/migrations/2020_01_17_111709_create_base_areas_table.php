@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Base\Area;
+
 class CreateBaseAreasTable extends Migration
 {
     /**
@@ -21,7 +23,7 @@ class CreateBaseAreasTable extends Migration
             $table->boolean('is_directory')->default(false)->nullable(false)->comment('是否有子节点');
             $table->unsignedInteger('level')->default(0)->nullable(false)->comment('层级');
             $table->string('path', 30)->default('')->comment('祖先IDs');
-            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->integer('order')->default(Area::ORDER_DEFAULT)->nullable(false)->comment('排序编号');
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->string('outer_name', 6)->default('')->comment('来源名称');
             $table->string('outer_key', 10)->default('')->comment('来源主键');

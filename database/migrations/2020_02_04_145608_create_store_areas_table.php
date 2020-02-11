@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Store\Area;
+
 class CreateStoreAreasTable extends Migration
 {
     /**
@@ -22,7 +24,7 @@ class CreateStoreAreasTable extends Migration
             $table->unsignedBigInteger('district_id')->default(0)->nullable(false)->comment('所在区县');
             $table->unsignedBigInteger('street_id')->default(0)->nullable(false)->comment('所在街道');
             $table->string('path', 255)->default('')->comment('所辖区域路径');
-            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->integer('order')->default(Area::ORDER_DEFAULT)->nullable(false)->comment('排序编号');
             $table->timestamps();
             $table->index(['store_id', 'order'], 'store-id-order');
         });

@@ -8,8 +8,6 @@ use App\Models\Model;
 
 class Selector extends Model
 {
-    public const ORDER_DEFAULT = 999;
-
     use SoftDeletes;
 
     protected $table = 'category_selectors';
@@ -100,7 +98,6 @@ class Selector extends Model
             $item->shop_id = $shop_id;
             $item->property_id =  $property_id;
             $item->name = $name;
-            $item->order = static::ORDER_DEFAULT;
             $item->is_enabled = true;
             $item->save();
         }

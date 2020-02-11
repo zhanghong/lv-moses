@@ -8,7 +8,6 @@ use App\Models\Model;
 
 class Property extends Model
 {
-    public const ORDER_DEFAULT = 999;
     public const TYPE_PARAMS = '1';
     public const TYPE_STANDARDS = '2';
 

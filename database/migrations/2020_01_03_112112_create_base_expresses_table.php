@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Base\Express;
+
 class CreateBaseExpressesTable extends Migration
 {
     /**
@@ -19,7 +21,7 @@ class CreateBaseExpressesTable extends Migration
             $table->string('code', 30)->default('')->nullable(false)->comment('名称');
             $table->string('name', 30)->default('')->nullable(false)->comment('名称');
             $table->string('logo_url')->default('')->comment('Logo 图片');
-            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->integer('order')->default(Express::ORDER_DEFAULT)->nullable(false)->comment('排序编号');
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->timestamps();
             $table->softDeletes();

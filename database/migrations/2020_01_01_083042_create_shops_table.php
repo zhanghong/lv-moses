@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use App\Models\Shop\Shop;
+
 class CreateShopsTable extends Migration
 {
     /**
@@ -21,7 +23,7 @@ class CreateShopsTable extends Migration
             $table->string('name', 100)->default('')->nullable(false)->comment('名称');
             $table->string('main_image_url')->default('')->comment('Logo URL');
             $table->unsignedInteger('store_count')->default(0)->comment('门店数量');
-            $table->integer('order')->default(0)->nullable(false)->comment('排序编号');
+            $table->integer('order')->default(Shop::ORDER_DEFAULT)->nullable(false)->comment('排序编号');
             $table->boolean('is_default')->default(false)->nullable(false)->comment('是否默认店铺');
             $table->boolean('is_enabled')->default(true)->nullable(false)->comment('是否启用');
             $table->timestamps();

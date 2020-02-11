@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 class Model extends EloquentModel
 {
+    public const ORDER_DEFAULT = 99;
     public const OUTER_FROM_WECHAT = 'wechat';
 
     public function __construct(array $attributes = [])
