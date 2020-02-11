@@ -14,6 +14,11 @@ class Brand extends Model
         'is_enabled' => 'boolean',
     ];
 
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     /**
      * 允许检测值唯一是否唯一的字段列表
      * @Author   zhanghong(Laifuzi)

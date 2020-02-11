@@ -52,6 +52,11 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     /**
      * 允许检测值唯一是否唯一的字段列表
      * @Author   zhanghong(Laifuzi)
