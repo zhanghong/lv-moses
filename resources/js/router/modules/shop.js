@@ -56,6 +56,12 @@ const shopRoutes = {
       meta: { title: 'editAgent', noCache: true },
       hidden: true,
     },
+    {
+      path: 'product',
+      component: () => import('@/views/shop/product/product/Form'),
+      name: 'ProductManage',
+      meta: { title: 'productManage', icon: 'list' },
+    },
   ],
 };
 

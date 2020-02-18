@@ -7,6 +7,7 @@ import router from '@/router';
 import i18n from './lang'; // Internationalization
 import '@/icons'; // icon
 import '@/permission'; // permission control
+import { toJson, isEmpty } from '@/utils/helpers';
 
 import * as filters from './filters'; // global filters
 
@@ -19,6 +20,9 @@ Vue.use(ElementUI, {
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key]);
 });
+
+Vue.prototype.$toJson = toJson;
+Vue.prototype.$isEmpty = isEmpty;
 
 Vue.config.productionTip = false;
 
