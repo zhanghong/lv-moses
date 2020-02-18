@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Shop\Product;
 
 use App\Models\Shop\Shop;
+use App\Models\Product\Product;
 use Illuminate\Http\Request;
-use App\Http\Requests\Base\FieldUniqueRequest;
 use App\Http\Controllers\Shop\Controller;
-use App\Exceptions\LogicException;
+use App\Http\Requests\Product\ProductRequest;
+use App\Http\Resources\Product\ProductDetailResource as DetailResource;
 
 class IndexController extends Controller
 {
@@ -18,43 +19,33 @@ class IndexController extends Controller
 
     public function store(ProductRequest $request, Shop $shop)
     {
-
+        $params = $request->all();
+        $product = new Product;
+        $product->shop()->associate($shop);
+        $product->updateInfo($params);
+        return new DetailResource($product);
     }
 
     public function show(Shop $shop, Product $product)
     {
-
+        return new DetailResource($product);
     }
 
     public function update(ProductRequest $request, Shop $shop, Product $product)
     {
-
+        try {
+            $product->updateInfo($request->all());
+            return new DetailResource($product);
+        } catch (\ErrorException $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy(Shop $shop, Product $product)
     {
-
-    }
-
-    // 验证店铺名称等字段值是否唯一
-    public function unique(FieldUniqueRequest $request, Shop $shop)
-    {
-        $id = $request->input('id');
-        $name = $request->input('name', '');
-        $value = $request->input('value', '');
-
-        $wheres = [
-            ['shop_id', '=', $shop->id]
-        ];
-        if ($id > 0) {
-            $wheres[] = ['id', '<>', $id];
-        }
-        try {
-            $flag = Product::checkAttrUnique($name, $value, $wheres);
-        } catch (LogicException $e) {
-            return $e;
-        }
-
-        return ['code' => 200, 'message' => '字段值唯一'];
+        $store->delete();
+        return $this->responseData([], 204);
     }
 }

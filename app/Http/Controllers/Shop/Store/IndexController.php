@@ -48,7 +48,7 @@ class IndexController extends Controller
     public function destroy(Shop $shop, Store $store)
     {
         $store->delete();
-        return response()->json(null, 204);
+        return $this->responseData([], 204);
     }
 
     // 验证店铺名称等字段值是否唯一

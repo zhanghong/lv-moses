@@ -93,7 +93,8 @@ class Store extends Model
      * @param    array              $params 更新数据
      * @return   Shop
      */
-    public function updateInfo(array $params) {
+    public function updateInfo(array $params)
+    {
         if (!$this->is_allow_update) {
             throw new DisallowException('店铺信息不允许更新');
         }

@@ -29,6 +29,8 @@ class RelationMapServiceProvider extends ServiceProvider
             'shops' => 'App\Models\Shop\Shop',
             'shop_configs' => 'App\Models\Shop\Config',
             'stores' => 'App\Models\Store\Store',
+            'products' => 'App\Models\Product\Product',
+            'product_skus' => 'App\Models\Product\Sku',
         ]);
     }
 }

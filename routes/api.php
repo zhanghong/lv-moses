@@ -68,5 +68,8 @@ Route::group(['middleware' => 'api'], function () {
         // 商品参数
         Route::post('shops/{shop}/product/params', 'Shop\Product\ParamController@store');
         Route::post('shops/{shop}/product/param_values/{property}', 'Shop\Product\ParamValueController@store');
+        // 商品图片
+        Route::post('shops/{shop}/product/images/main', 'Shop\Product\ImageController@main');
+        Route::post('shops/{shop}/product/images/desc', 'Shop\Product\ImageController@desc');
     });
 });
