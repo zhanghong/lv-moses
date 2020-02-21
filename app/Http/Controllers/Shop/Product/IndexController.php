@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Shop\Product;
 
+use Illuminate\Http\Request;
+
 use App\Models\Shop\Shop;
 use App\Models\Product\Product;
-use Illuminate\Http\Request;
+use App\Models\Category\Category;
 use App\Http\Controllers\Shop\Controller;
 use App\Http\Requests\Product\ProductRequest;
 use App\Http\Resources\Product\ProductDetailResource as DetailResource;
+use App\Http\Resources\Category\CategoryShopDetailResource;
 
 class IndexController extends Controller
 {
@@ -15,6 +18,13 @@ class IndexController extends Controller
     {
         $user = Auth::user();
         return ['user' => $user];
+    }
+
+    public function category(Request $request, Shop $shop)
+    {
+        $category_id = $request->category_id;
+        $category = Category::find($category_id);
+        return new CategoryShopDetailResource($category);
     }
 
     public function store(ProductRequest $request, Shop $shop)

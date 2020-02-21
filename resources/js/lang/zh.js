@@ -75,6 +75,7 @@ export default {
     createAgent: '添加经销商',
     editManage: '编辑经销商',
     productManage: '商品管理',
+    productCategory: '选择类目',
     createProduct: '添加商品',
     editProduct: '编辑商品',
   },

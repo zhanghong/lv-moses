@@ -62,6 +62,27 @@ const shopRoutes = {
       name: 'ProductManage',
       meta: { title: 'productManage', icon: 'list' },
     },
+    {
+      path: 'product/category',
+      component: () => import('@/views/shop/product/product/Category'),
+      name: 'ProductCategory',
+      meta: { title: 'productCategory', icon: 'list' },
+      hidden: true,
+    },
+    {
+      path: 'product/create/:cat_id(\\d+)',
+      component: () => import('@/views/shop/product/product/Form'),
+      name: 'CreateProduct',
+      meta: { title: 'createProduct', icon: 'list' },
+      hidden: true,
+    },
+    {
+      path: 'product/edit/:id(\\d+)',
+      component: () => import('@/views/shop/product/product/Form'),
+      name: 'EditProduct',
+      meta: { title: 'editProduct', icon: 'list' },
+      hidden: true,
+    },
   ],
 };
 

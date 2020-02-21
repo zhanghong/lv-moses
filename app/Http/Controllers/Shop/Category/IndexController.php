@@ -15,10 +15,14 @@ class IndexController extends Controller
         $list = [];
         $pid = $request->get('pid');
         $pid = intval($pid);
+        $categories = Category::selectByParentId($pid);
         if ($pid > 0) {
             $list = Category::selectByParentId($pid)
-                            ->mapWithKeys(function ($cat) {
-                                return [$cat->id => $cat->name];
+                            ->map(function ($cat) {
+                                return [
+                                    'id' => $cat->id,
+                                    'name' => $cat->name,
+                                ];
                             });
         }
 

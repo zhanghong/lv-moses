@@ -62,6 +62,7 @@ Route::group(['middleware' => 'api'], function () {
         Route::apiResource('shops/{shop}/product/brands', 'Shop\Product\BrandController');
         // 商品管理
         Route::apiResource('shops/{shop}/product/index', 'Shop\Product\IndexController', ['parameters' => ['index' => 'product']]);
+        Route::get('shops/{shop}/product/category', 'Shop\Product\IndexController@category');
         // 商品规格
         Route::post('shops/{shop}/product/standards', 'Shop\Product\StandardController@store');
         Route::post('shops/{shop}/product/standard_values/{property}', 'Shop\Product\StandardValueController@store');
