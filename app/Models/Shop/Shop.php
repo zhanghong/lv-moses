@@ -3,6 +3,8 @@
 namespace App\Models\Shop;
 
 use DB;
+use Cache;
+use Auth;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
@@ -23,6 +25,7 @@ class Shop extends Model
     public const IMAGE_WIDTH_MAIN = 200;
     // 店铺Banner图片最大宽度
     public const IMAGE_WIDTH_BANNER = 1000;
+    public const CACHE_KEY_USER_LIST = 'user_shops';
 
     protected $table = 'shops';
 
@@ -124,6 +127,50 @@ class Shop extends Model
             ['name' => 'order', 'type' => 'int', 'default' => 0],
             ['name' => 'is_enabled', 'type' => 'bool'],
         ]);
+    }
+
+    /**
+     * 当前登录用户所属店铺
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-02-24
+     * @return   Shop/null
+     */
+    public static function current()
+    {
+        return static::cacheOrFindCurrent();
+    }
+
+    /**
+     * 查找当前登录用户所属店铺
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-02-24
+     * @param    boolean            $reload 是否强制查询
+     * @return   Shop/null
+     */
+    protected static function cacheOrFindCurrent($reload = false)
+    {
+        $user_id = User::currentUserId();
+        if (!$user_id) {
+            $user_id = 0;
+            // return null;
+        }
+
+        $user_key = 'user_' . $user_id;
+
+        $list = Cache::store('redis')->get(static::CACHE_KEY_USER_LIST, []);
+
+        if (!$reload && isset($list[$user_key])) {
+            return $list[$user_key];
+        }
+
+        $shop = static::first();
+        if (!$shop) {
+            return null;
+        }
+        $list[$user_key] = $shop;
+        Cache::put(static::CACHE_KEY_USER_LIST, $list);
+
+        return $shop;
     }
 
     /**

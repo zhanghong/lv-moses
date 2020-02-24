@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Shop;
+namespace App\Http\Requests\Shop\Base;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\Shop\FormRequest;
 
 class BannerImageRequest extends FormRequest
 {

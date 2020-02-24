@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Shop\Store;
 
 use App\Models\Shop\Shop;
 use App\Models\Store\Store;
-use App\Http\Requests\Store\StoreRequest;
 use App\Http\Requests\Base\FieldUniqueRequest;
+use App\Http\Requests\Shop\Store\StoreRequest;
 use App\Http\Resources\Store\StoreListResource as ListResource;
 use App\Http\Resources\Store\StoreDetailResource as DetailResource;
 use App\Http\Controllers\Shop\Controller;
@@ -13,27 +13,27 @@ use App\Exceptions\LogicException;
 
 class IndexController extends Controller
 {
-    public function index(Shop $shop)
+    public function index()
     {
-        $paginate = Store::where('shop_id', $shop->id)->paginate();
+        $paginate = Store::where('shop_id', $this->shop->id)->paginate();
         return ListResource::collection($paginate);
     }
 
-    public function store(StoreRequest $request, Shop $shop)
+    public function store(StoreRequest $request)
     {
         $params = $request->all();
         $store = new Store;
-        $store->shop()->associate($shop);
+        $store->shop()->associate($this->shop);
         $store->updateInfo($params);
         return new DetailResource($store);
     }
 
-    public function show(Shop $shop, Store $store)
+    public function show(Store $store)
     {
         return new DetailResource($store);
     }
 
-    public function update(StoreRequest $request, Shop $shop, Store $store)
+    public function update(StoreRequest $request, Store $store)
     {
         try {
             $store->updateInfo($request->all());
@@ -45,21 +45,21 @@ class IndexController extends Controller
         }
     }
 
-    public function destroy(Shop $shop, Store $store)
+    public function destroy(Store $store)
     {
         $store->delete();
         return $this->responseData([], 204);
     }
 
     // 验证店铺名称等字段值是否唯一
-    public function unique(FieldUniqueRequest $request, Shop $shop)
+    public function unique(FieldUniqueRequest $request)
     {
         $id = $request->input('id');
         $name = $request->input('name', '');
         $value = $request->input('value', '');
 
         $wheres = [
-            ['shop_id', '=', $shop->id]
+            ['shop_id', '=', $this->shop->id]
         ];
         if ($id > 0) {
             $wheres[] = ['id', '<>', $id];

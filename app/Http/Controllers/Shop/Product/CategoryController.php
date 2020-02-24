@@ -5,36 +5,36 @@ namespace App\Http\Controllers\Shop\Product;
 use Illuminate\Http\Request;
 use App\Models\Shop\Shop;
 use App\Models\Product\Category;
-use App\Http\Requests\Product\CategoryRequest;
+use App\Http\Requests\Shop\Product\CategoryRequest;
 use App\Http\Resources\Product\CategoryResource;
 use App\Http\Controllers\Shop\Controller;
 
 class CategoryController extends Controller
 {
-    public function index(Shop $shop)
+    public function index()
     {
         $paginate = Category::withOrder('ASC')
-                        ->where('shop_id', $shop->id)
+                        ->where('shop_id', $this->shop->id)
                         ->paginate();
         return CategoryResource::collection($paginate);
     }
 
-    public function store(CategoryRequest $request, Shop $shop)
+    public function store(CategoryRequest $request)
     {
         $params = $request->all();
         $category = new Category;
         $category->parseFill($params);
-        $category->shop()->associate($shop);
+        $category->shop()->associate($this->shop);
         $category->save();
         return new CategoryResource($category);
     }
 
-    public function show(Shop $shop, Category $category)
+    public function show(Category $category)
     {
         return new CategoryResource($category);
     }
 
-    public function update(CategoryRequest $request, Shop $shop, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
         $params = $request->all();
         $category->parseFill($params);
@@ -42,7 +42,7 @@ class CategoryController extends Controller
         return new CategoryResource($category);
     }
 
-    public function destroy(Shop $shop, Category $category)
+    public function destroy(Category $category)
     {
         $category->delete();
         return $this->responseData([]);

@@ -20,8 +20,8 @@ class CreateBaseCategoryPropertiesTable extends Migration
             $table->unsignedBigInteger('creater_id')->default(0)->nullable(false)->comment('创建管理员ID');
             $table->unsignedBigInteger('category_id')->default(0)->nullable(false)->comment('分类ID');
             $table->string('name', 30)->default('')->nullable(false)->comment('名称');
-            $table->string('type', 10)->default('')->nullable(false)->comment('属性类型');
-            $table->string('choice', 10)->default('')->nullable(false)->comment('显示格式');
+            $table->unsignedSmallInteger('type')->default(Property::TYPE_PARAMS)->nullable(false)->comment('属性类型');
+            $table->unsignedSmallInteger('choice')->default(Property::CHOICE_SELECT)->nullable(false)->comment('显示格式');
             $table->string('value_ids', 1000)->default('')->comment('属性值IDs');
             $table->string('outer_name', 6)->default('')->comment('来源名称');
             $table->string('outer_key', 10)->default('')->comment('来源主键');

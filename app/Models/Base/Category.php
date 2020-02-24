@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Models\Product;
+namespace App\Models\Base;
 
+use DB;
 use App\Models\Category\Category as Model;
+
+use App\Models\Model;
 
 class Category extends Model
 {
@@ -15,10 +18,8 @@ class Category extends Model
     {
         parent::boot();
 
-        static::addGlobalScope('type_product', function (Builder $builder) {
-            $builder->where('type', '=', static::TYPE_PRODUCT)->where('shop_id', '>', 0);
+        static::addGlobalScope('type_base', function (Builder $builder) {
+            $builder->where('type', '=', static::TYPE_BASE)->where('shop_id', '=', 0);
         });
     }
-
-
 }

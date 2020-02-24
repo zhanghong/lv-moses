@@ -8,11 +8,11 @@ use App\Models\Model;
 
 class Property extends Model
 {
-    public const TYPE_PARAMS = '1';
-    public const TYPE_STANDARDS = '2';
+    public const TYPE_PARAMS = 1;
+    public const TYPE_STANDARDS = 2;
 
-    public const CHOICE_SELECT = '1';
-    public const CHOICE_CHECKBOX = '2';
+    public const CHOICE_SELECT = 1;
+    public const CHOICE_CHECKBOX = 2;
 
     use SoftDeletes;
 

@@ -10,7 +10,7 @@ use App\Http\Controllers\Shop\Controller;
 
 class UploadController extends Controller
 {
-    public function store(Request $request, Shop $shop)
+    public function store(Request $request)
     {
         $attach_type = $request->input('attach_type', 'demo');
 
@@ -18,14 +18,14 @@ class UploadController extends Controller
         $options['max_width'] = $request->input('max_width', 0);
         $is_bind = $request->input('is_bind', '');
         if ($is_bind) {
-            $options['attachable'] = $shop;
+            $options['attachable'] = $this->shop;
         }
 
-        $upload = Upload::saveAttach($shop, $attach_type, $request->file, $options);
+        $upload = Upload::saveAttach($this->shop, $attach_type, $request->file, $options);
         return new UploadResource($upload);
     }
 
-    public function show(Shop $shop, Upload $upload)
+    public function show(Upload $upload)
     {
         return new UploadResource($upload);
     }

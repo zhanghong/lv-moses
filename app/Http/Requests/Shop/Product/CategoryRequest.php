@@ -3,20 +3,21 @@
 namespace App\Http\Requests\Product;
 
 use Illuminate\Validation\Rule;
-use App\Http\Requests\FormRequest;
 use App\Models\Product\Category;
+use App\Http\Requests\Shop\FormRequest;
 
 class CategoryRequest extends FormRequest
 {
     public function rules()
     {
+        $shop_id = $this->currentShopId();
+
         return [
             'name' => [
                 'required',
                 'min:2',
                 'max:20',
-                Rule::unique('product_categories')->where(function ($query) {
-                    $shop_id = $this->route('shop')->id;
+                Rule::unique('product_categories')->where(function ($query) use ($shop_id) {
                     $category = $this->route('category');
                     $parent_id = request('parent_id');
                     if (is_null($parent_id)) {
@@ -42,7 +43,7 @@ class CategoryRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     if (intval($value) > 0) {
                         $parent = Category::find($value);
-                        if (!$parent || $parent->shop_id != $this->route('shop')->id) {
+                        if (!$parent || $parent->shop_id != $shop_id) {
                             return $fail('上级分类不存在');
                         } else if ($parent->level > 0) {
                             return $fail('店铺内只允许创建两分分类');

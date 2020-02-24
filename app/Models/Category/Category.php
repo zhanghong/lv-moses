@@ -9,6 +9,9 @@ use App\Models\Model;
 
 class Category extends Model
 {
+    public const TYPE_BASE = 1;
+    public const TYPE_PRODUCT = 2;
+
     use SoftDeletes;
 
     protected $table = 'categories';
@@ -53,12 +56,42 @@ class Category extends Model
         });
     }
 
-    public function parent()
+    /**
+     * 允许检测值唯一是否唯一的字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-14
+     * @return   array
+     */
+    protected static function allowUniqueAttrs()
+    {
+        return ['name'];
+    }
+
+    /**
+     * 允许表单更新字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-17
+     * @return   array
+     */
+    public static function parseFields() {
+        return collect([
+            ['name' => 'name', 'type' => 'string', 'default' => ''],
+            ['name' => 'icon_url', 'type' => 'string', 'default' => ''],
+            ['name' => 'is_directory', 'type' => 'boolean'],
+            ['name' => 'level', 'type' => 'integer', 'default' => 0],
+            ['name' => 'path', 'type' => 'string', 'default' => ''],
+            ['name' => 'parent_id', 'type' => 'integer', 'default' => 0],
+            ['name' => 'is_enabled', 'type' => 'boolean'],
+            ['name' => 'order', 'type' => 'integer', 'default' => 0],
+        ]);
+    }
+
+    protected function parent()
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function children()
+    protected function children()
     {
         return $this->hasMany(Category::class, 'parent_id');
     }

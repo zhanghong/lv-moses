@@ -9,8 +9,12 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 class Model extends EloquentModel
 {
+    // 默认排序编号值
     public const ORDER_DEFAULT = 99;
+    // 外部数据来源-微信
     public const OUTER_FROM_WECHAT = 'wechat';
+    // 默认缓存时长（秒）
+    public const CACHE_EXPIRE_SECONDS = 60 * 65;
 
     public function __construct(array $attributes = [])
     {

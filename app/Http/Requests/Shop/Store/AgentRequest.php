@@ -3,22 +3,21 @@
 namespace App\Http\Requests\Store;
 
 use App\Models\Store\Agent;
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\Shop\FormRequest;
 
 class AgentRequest extends FormRequest
 {
     public function rules()
     {
+        $shop_id = $this->currentShopId();
         return [
             'name' => [
                 'required',
                 'min:2',
                 'max:20',
-                function ($attribute, $value, $fail) {
-                    $wheres = [];
-                    if ($this->route('shop')) {
-                        $wheres[] = ['shop_id', '=', $this->route('shop')->id];
-                    }
+                function ($attribute, $value, $fail) use ($shop_id) {
+                    $wheres = [['shop_id', '=', $shop_id]];
+
                     if ($this->route('agent')) {
                         $wheres[] = ['id', '<>', $this->route('agent')->id];
                     }

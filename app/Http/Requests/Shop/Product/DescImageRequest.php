@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Product;
 
 use App\Models\Product\Product;
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\Shop\FormRequest;
 
 class DescImageRequest extends FormRequest
 {

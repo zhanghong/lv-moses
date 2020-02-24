@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Store;
+namespace App\Http\Requests\Shop\Base;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\Shop\FormRequest;
 
-class ImageRequest extends FormRequest
+class MainImageRequest extends FormRequest
 {
     public function rules()
     {

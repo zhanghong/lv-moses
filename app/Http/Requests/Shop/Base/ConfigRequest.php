@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Http\Requests\Shop;
+namespace App\Http\Requests\Shop\Base;
 
 use App\Models\Shop\Shop;
-use App\Http\Requests\FormRequest;
 use App\Exceptions\LogicException;
+use App\Http\Requests\Shop\FormRequest;
 
 class ConfigRequest extends FormRequest
 {
     public function rules()
     {
+        $shop_id = $this->currentShopId();
         return [
             'name' => [
                 'sometimes',
                 'required',
                 'min:2',
                 'max:20',
-                function ($attribute, $value, $fail) {
+                function ($attribute, $value, $fail) use ($shop_id) {
                     $wheres = [];
-                    if ($this->route('shop')) {
-                        $wheres[] = ['id','<>', $this->route('shop')->id];
+                    if ($shop_id) {
+                        $wheres[] = ['id','<>', $shop_id];
                     }
                     try {
                         Shop::checkAttrUnique('name', $value, $wheres);

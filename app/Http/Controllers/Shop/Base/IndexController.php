@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Shop\Base;
 
 use App\Models\Shop\Shop;
 use App\Models\Base\Upload;
-use App\Http\Requests\Shop\ConfigRequest;
-use App\Http\Requests\Shop\MainImageRequest;
-use App\Http\Requests\Shop\BannerImageRequest;
+use App\Http\Requests\Shop\Base\ConfigRequest;
+use App\Http\Requests\Shop\Base\MainImageRequest;
+use App\Http\Requests\Shop\Base\BannerImageRequest;
 use App\Http\Requests\Base\FieldUniqueRequest;
 use App\Http\Resources\Base\UploadResource;
 use App\Http\Resources\Shop\ConfigResource;
@@ -15,21 +15,23 @@ use App\Http\Controllers\Shop\Controller;
 
 class IndexController extends Controller
 {
-    public function index(Shop $shop)
+    public function index()
     {
-        return new ConfigResource($shop);
+        return new ConfigResource($this->shop);
     }
 
-    public function update(ConfigRequest $request, Shop $shop)
+    public function update(ConfigRequest $request)
     {
-        $shop->updateInfo($request->all());
-        return new ConfigResource($shop);
+        $this->shop->updateInfo($request->all());
+        // 更新缓存数据
+        Shop::cacheOrFindCurrent(true);
+        return new ConfigResource($this->shop);
     }
 
     // 验证店铺名称等字段值是否唯一
     public function unique(FieldUniqueRequest $request)
     {
-        $id = $request->input('id');
+        $id = $this->shop->id;
         $name = $request->input('name', '');
         $value = $request->input('value', '');
 
@@ -47,24 +49,24 @@ class IndexController extends Controller
     }
 
     // 上传Logo图片
-    public function main_image(MainImageRequest $request, Shop $shop)
+    public function main_image(MainImageRequest $request)
     {
         $options = [
             'folder' => 'shop',
             'max_width' => Shop::IMAGE_WIDTH_MAIN,
         ];
-        $image = Upload::saveAttach($shop, Shop::UPLOAD_TYPE_MAIN_IMAGE, $request->image, $options);
+        $image = Upload::saveAttach($this->shop, Shop::UPLOAD_TYPE_MAIN_IMAGE, $request->image, $options);
         return new UploadResource($image);
     }
 
     // 上传Banner图片
-    public function banner_image(BannerImageRequest $request, Shop $shop)
+    public function banner_image(BannerImageRequest $request)
     {
         $options = [
             'folder' => 'shop',
             'max_width' => Shop::IMAGE_WIDTH_BANNER,
         ];
-        $image = Upload::saveAttach($shop, Shop::UPLOAD_TYPE_BANNER, $request->image, $options);
+        $image = Upload::saveAttach($this->shop, Shop::UPLOAD_TYPE_BANNER, $request->image, $options);
         return new UploadResource($image);
     }
 }

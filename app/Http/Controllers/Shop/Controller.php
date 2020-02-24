@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Models\Shop\Shop;
 use App\Http\Controllers\Controller as HttpController;
 
 class Controller extends HttpController
 {
-    protected function responseData($data, $code = 200)
+    protected $shop;
+
+    public function __construct()
     {
-        return response()->json(['data' => $data], $code);
+        $this->shop    = Shop::current();
     }
 }

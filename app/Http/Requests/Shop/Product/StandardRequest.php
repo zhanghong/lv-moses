@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Http\Requests\Category;
+namespace App\Http\Requests\Shop\Product;
 
 use Illuminate\Validation\Rule;
 use App\Models\Category\Category;
-use App\Http\Requests\FormRequest;
+use App\Models\Category\Property;
+use App\Http\Requests\Shop\FormRequest;
 
 class StandardRequest extends FormRequest
 {
     public function rules()
     {
+        $shop_id = $this->currentShopId();
         return [
             'category_id' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    $query = Category::where('id', $value)->where('level', 3);
+                    $query = Category::where('id', $value)->where('shop_id', $shop_id);
                     if (!$query->count()){
-                        $fail('所属分类 必须是第三级类目。');
+                        $fail('所属店铺分类 不存在。');
                     }
                 },
             ],
@@ -24,11 +26,11 @@ class StandardRequest extends FormRequest
                 'required',
                 'min:2',
                 'max:10',
-                Rule::unique('product_brands')->where(function ($query) {
-                    if ($this->route('brand')) {
-                        $query = $query->where('id', '<>', $this->route('brand')->id);
+                Rule::unique('category_properties')->where(function ($query) use ($shop_id) {
+                    if ($this->route('property')) {
+                        $query = $query->where('id', '<>', $this->route('property')->id);
                     }
-                    return $query->where('shop_id', $this->route('shop')->id)->whereNull('deleted_at');
+                    return $query->where('shop_id', $shop_id)->where('type', Property::TYPE_STANDARDS)->whereNull('deleted_at');
                 }),
             ],
             'values' => [

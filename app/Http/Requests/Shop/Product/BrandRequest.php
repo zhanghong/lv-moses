@@ -3,22 +3,23 @@
 namespace App\Http\Requests\Product;
 
 use Illuminate\Validation\Rule;
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\Shop\FormRequest;
 
 class BrandRequest extends FormRequest
 {
     public function rules()
     {
+        $shop_id = $this->currentShopId();
         return [
             'name' => [
                 'required',
                 'min:2',
                 'max:20',
-                Rule::unique('product_brands')->where(function ($query) {
+                Rule::unique('product_brands')->where(function ($query) use ($shop_id) {
                     if ($this->route('brand')) {
                         $query = $query->where('id', '<>', $this->route('brand')->id);
                     }
-                    return $query->where('shop_id', $this->route('shop')->id)->whereNull('deleted_at');
+                    return $query->where('shop_id',$shop_id)->whereNull('deleted_at');
                 }),
             ],
             'description' => 'max:200',

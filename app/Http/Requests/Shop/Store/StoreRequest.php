@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests\Store;
 
-use App\Models\Store\Store;
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\Shop\FormRequest;
 
 class StoreRequest extends FormRequest
 {

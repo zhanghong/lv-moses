@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
-use App\Http\Requests\FormRequest;
+use App\Http\Requests\Shop\FormRequest;
 
 class ProductRequest extends FormRequest
 {
