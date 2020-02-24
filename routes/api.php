@@ -40,7 +40,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('base/uploads', 'Shop\Base\UploadController@store');
             Route::get('base/uploads/{upload}', 'Shop\Base\UploadController@show');
 
-            Route::post('store/index/unique', 'Shop\Store\AgentController@unique');
+            Route::post('store/index/unique', 'Shop\Store\IndexController@unique');
             Route::apiResource('store/index', 'Shop\Store\IndexController', ['parameters' => ['index' => 'store']]);
             // 门店图片
             Route::get('store/image/{store}', 'Shop\Store\ImageController@index');

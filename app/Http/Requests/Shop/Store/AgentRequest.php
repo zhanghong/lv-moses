@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Store;
+namespace App\Http\Requests\Shop\Store;
 
 use App\Models\Store\Agent;
 use App\Http\Requests\Shop\FormRequest;

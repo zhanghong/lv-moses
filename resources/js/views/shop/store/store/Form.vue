@@ -1,10 +1,11 @@
+
 <template>
   <div class="app-container">
     <el-form ref="postForm" :model="postForm" :rules="rules" label-width="150px">
 
       <el-form-item :label="fields.agent_id" prop="agent_id">
         <el-select v-model="postForm.agent_id" placeholder="请输选择所属经销商">
-          <el-option v-for="item in postForm.agents" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in agents" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
 
@@ -85,7 +86,6 @@ import AreaSelect from '@/components/AreaSelect';
 import RegionSelect from './components/RegionSelect';
 
 const defaultForm = {
-  agents: [],
   agent_id: '',
   name: '',
   area_id: 0,
@@ -97,12 +97,10 @@ const defaultForm = {
   images: [],
   staff_count: '',
   auth_no: '',
-  order: '',
+  order: 0,
 };
 
-const shop_id = 1;
-const modelResource = new Resource('shops/' + shop_id + '/store/index');
-// const imageResource = new Resource('shops/' + shop_id + '/store/image');
+const modelResource = new Resource('shop/store/index');
 
 export default {
   name: 'Form',
@@ -143,17 +141,17 @@ export default {
       dialogVisible: false,
       imageLimit: 2,
       fields: {
-        agent_id: this.$t('store_item.agent_id'),
-        name: this.$t('store_item.name'),
-        auth_no: this.$t('store_item.auth_no'),
-        images: this.$t('store_item.images'),
-        area_id: this.$t('store_item.area_id'),
-        address: this.$t('store_item.address'),
-        contact_name: this.$t('store_item.contact_name'),
-        contact_phone: this.$t('store_item.contact_phone'),
-        streets: this.$t('store_item.streets'),
-        staff_count: this.$t('store_item.staff_count'),
-        order: this.$t('store_item.order'),
+        agent_id: this.$t('store.agent_id'),
+        name: this.$t('store.name'),
+        auth_no: this.$t('store.auth_no'),
+        images: this.$t('store.images'),
+        area_id: this.$t('store.area_id'),
+        address: this.$t('store.address'),
+        contact_name: this.$t('store.contact_name'),
+        contact_phone: this.$t('store.contact_phone'),
+        streets: this.$t('store.streets'),
+        staff_count: this.$t('store.staff_count'),
+        order: this.$t('store.order'),
       },
       rules: {
         agent_id: [
@@ -165,19 +163,23 @@ export default {
           { validator: validateNameUnique, trigger: 'blur' },
         ],
         area_id: [
-          { required: true, message: '请选择所在地区', trigger: 'change' },
+          { required: true, message: '请选择所在地区' },
+          { min: 1, message: '请选择所在地区' },
         ],
         address: [
           { required: true, message: '详细地址 不能为空', trigger: 'blur' },
           { min: 2, max: 50, message: '门店名称 长度在 2 到 20 个字符', trigger: 'blur' },
         ],
         contact_name: [
+          { required: true, message: '联系人 不能为空', trigger: 'change' },
           { min: 2, max: 20, message: '联系人 长度在 2 到 20 个字符', trigger: 'blur' },
         ],
         contact_phone: [
+          { required: true, message: '联系方式 不能为空', trigger: 'change' },
           { max: 30, message: '联系方式 最大长度 30 个字符', trigger: 'blur' },
         ],
         order: [
+          { required: true, message: '排序编号 不能为空', trigger: 'change' },
           { type: 'integer', message: '排序编号 只能输入整数', trigger: 'blur' },
         ],
       },
@@ -186,11 +188,11 @@ export default {
   computed: {
     // 上传Logo图片后端路由
     uploadImageUrl() {
-      return '/api/shops/' + shop_id + '/store/image';
+      return '/api/shop/store/image';
     },
   },
   created() {
-    this.fetchFieldOptions();
+    this.fetchInit();
     if (this.isEdit) {
       const id = this.$route.params && this.$route.params.id;
       this.fetchData(id);
@@ -217,12 +219,12 @@ export default {
           this.loading = false;
         });
     },
-    fetchFieldOptions() {
-      const agentResource = new Resource('shops/' + shop_id + '/store/agents');
+    fetchInit() {
+      const agentResource = new Resource('shop/store/agents');
       agentResource
         .select({})
         .then(response => {
-          this.postForm.agents = response.data;
+          this.agents = response.data;
         })
         .catch(() => {
           this.postForm.agents = [];

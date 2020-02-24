@@ -21,6 +21,7 @@ class AgentResource extends JsonResource
             'contact_name' => $this->contact_name,
             'contact_phone' => $this->contact_phone,
             'store_count' => $this->store_count,
+            'order' => $this->order,
             'can_update' => $this->can_update,
             'can_delete' => $this->can_delete,
             'created_at' => $this->created_at->toDateTimeString(),

@@ -16,7 +16,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="fields.agent_name" width="200">
+      <el-table-column align="center" :label="fields.agent_name">
         <template slot-scope="scope">
           <span>{{ scope.row.agent_name }}</span>
         </template>
@@ -28,19 +28,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="fields.area_full_name">
+      <el-table-column align="center" :label="fields.area_full_name" width="400">
         <template slot-scope="scope">
-          <span>{{ scope.row.area_full_name }}</span>
+          <span>{{ scope.row.full_address }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="fields.staff_count" width="200">
+      <el-table-column align="center" :label="fields.order">
         <template slot-scope="scope">
-          <span>{{ scope.row.staff_count }}</span>
+          <span>{{ scope.row.order }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="" width="350">
+      <el-table-column align="center" label="" width="200">
         <template slot-scope="scope">
           <router-link :to="'/shop/store/edit/'+scope.row.id">
             <el-button type="primary" size="small" icon="el-icon-edit">
@@ -59,7 +59,7 @@
 
 <script>
 import Resource from '@/api/resource';
-const modelResource = new Resource('shops/1/store/index');
+const modelResource = new Resource('shop/store/index');
 
 export default {
   name: 'StoreItemList',
@@ -68,11 +68,12 @@ export default {
       list: [],
       loading: true,
       fields: {
-        name: this.$t('store_item.name'),
-        agent_name: this.$t('store_item.contact_name'),
-        area_full_name: this.$t('store_item.area_full_name'),
-        auth_no: this.$t('store_item.auth_no'),
-        staff_count: this.$t('store_item.staff_count'),
+        name: this.$t('store.name'),
+        agent_name: this.$t('store.contact_name'),
+        area_full_name: this.$t('store.area_full_name'),
+        auth_no: this.$t('store.auth_no'),
+        staff_count: this.$t('store.staff_count'),
+        order: this.$t('store.order'),
       },
     };
   },

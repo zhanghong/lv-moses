@@ -40,6 +40,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column align="center" :label="fields.order">
+        <template slot-scope="scope">
+          <span>{{ scope.row.order }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column align="center" label="" width="350">
         <template slot-scope="scope">
           <router-link :to="'/shop/agent/edit/'+scope.row.id">
@@ -59,7 +65,7 @@
 
 <script>
 import Resource from '@/api/resource';
-const agentResource = new Resource('shops/1/store/agents');
+const agentResource = new Resource('shop/store/agents');
 
 export default {
   name: 'StoreAgentList',
@@ -73,6 +79,7 @@ export default {
         contact_phone: this.$t('store_agent.contact_phone'),
         contact_address: this.$t('store_agent.contact_address'),
         store_count: this.$t('store_agent.store_count'),
+        order: this.$t('store_agent.order'),
       },
     };
   },

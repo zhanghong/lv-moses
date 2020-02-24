@@ -38,10 +38,10 @@ const defaultForm = {
   contact_name: '',
   contact_phone: '',
   contact_address: '',
+  order: 0,
 };
 
-const shop_id = 1;
-const formResource = new Resource('shops/' + shop_id + '/store/agents');
+const formResource = new Resource('shop/store/agents');
 
 export default {
   name: 'Form',
@@ -78,6 +78,7 @@ export default {
         contact_phone: this.$t('store_agent.contact_phone'),
         contact_address: this.$t('store_agent.contact_address'),
         store_count: this.$t('store_agent.store_count'),
+        order: this.$t('store_agent.order'),
       },
       rules: {
         name: [
@@ -95,6 +96,10 @@ export default {
         ],
         contact_address: [
           { max: 100, message: '联系地址 最大长度 100 个字符', trigger: 'blur' },
+        ],
+        order: [
+          { required: true, message: '排序编号 不能为空', trigger: 'change' },
+          { type: 'integer', message: '排序编号 只能输入整数', trigger: 'blur' },
         ],
       },
     };

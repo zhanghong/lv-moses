@@ -13,7 +13,7 @@
         <el-image v-else-if="shop.main_image_url.length" class="img-avatar" :src="shop.main_image_url" />
         <el-image v-else class="img-avatar" />
       </el-form-item>
-      <el-form-item :label="fields.name" prop="banner_url">
+      <el-form-item :label="fields.banner_url" prop="banner_url">
         <el-upload v-if="isEdit" class="banner-uploader" :action="uploadBannerImageUrl" name="image" accept="image/png, image/jpeg" :show-file-list="false" :on-success="handleBannerSuccess" :before-upload="beforeBannerUpload">
           <img v-if="shop.banner_url" :src="shop.banner_url" class="img-banner">
           <i v-else class="el-icon-plus uploader-icon uploader-icon-banner" />
@@ -54,7 +54,6 @@
 import { getShop, updateShop, checkNameUnique } from '@/api/shop/base/config';
 
 const defaultShop = {
-  id: 1,
   name: '',
   main_image_id: '',
   main_image_url: '',
@@ -69,7 +68,7 @@ const defaultShop = {
 export default {
   data() {
     var validateNameUnique = (rule, value, callback) => {
-      checkNameUnique(this.shop.id, this.shop.name)
+      checkNameUnique(this.shop.name)
         .then(response => {
           if (response.code !== 200) {
             callback(new Error('店铺名称已存在'));
@@ -122,11 +121,11 @@ export default {
   computed: {
     // 上传Logo图片后端路由
     uploadMainImageUrl() {
-      return '/api/shops/' + this.shop.id + '/base/index/main_image';
+      return '/api/shop/base/index/main_image';
     },
     // 上传Banner图片后端路由
     uploadBannerImageUrl() {
-      return '/api/shops/' + this.shop.id + '/base/index/banner_image';
+      return '/api/shop/base/index/banner_image';
     },
   },
   created() {
@@ -134,7 +133,7 @@ export default {
   },
   methods: {
     fetchData() {
-      getShop(this.shop.id)
+      getShop()
         .then(response => {
           this.shop = response.data;
           this.isEdit = false;
@@ -151,7 +150,7 @@ export default {
       this.$refs.shop.validate(valid => {
         if (valid) {
           this.loading = true;
-          updateShop(this.shop.id, this.shop)
+          updateShop(this.shop)
             .then(response => {
               this.$message('店铺信息更新成功');
               this.loading = false;
@@ -186,7 +185,7 @@ export default {
     },
     handleMainImageSuccess(res, file) {
       this.shop.main_image_id = res.data.id;
-      this.shop.main_image_url = res.data.file_url;
+      this.shop.main_image_url = res.data.url;
     },
     beforeBannerUpload(file) {
       const fileKbSize = file.size / 1024; // file KB size
@@ -204,7 +203,7 @@ export default {
     },
     handleBannerSuccess(res, file) {
       this.shop.banner_id = res.data.id;
-      this.shop.banner_url = res.data.file_url;
+      this.shop.banner_url = res.data.url;
     },
   },
 };

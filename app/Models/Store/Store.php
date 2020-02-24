@@ -65,6 +65,17 @@ class Store extends Model
     }
 
     /**
+     * 允许检测值唯一是否唯一的字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-14
+     * @return   array
+     */
+    protected static function allowUniqueAttrs()
+    {
+        return ['name'];
+    }
+
+    /**
      * 允许表单更新字段列表
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-17
@@ -82,8 +93,22 @@ class Store extends Model
             ['name' => 'work_start_time', 'type' => 'time'],
             ['name' => 'work_end_time', 'type' => 'time'],
             ['name' => 'is_enabled', 'type' => 'boolean'],
-            ['name' => 'order', 'type' => 'integer', 'default' => 0],
+            ['name' => 'order', 'type' => 'integer', 'default' => static::ORDER_DEFAULT],
         ]);
+    }
+
+    public function getFullAddressStrAttribute()
+    {
+        if (!$this->full_address) {
+            return '';
+        }
+
+        $values = [];
+        $names = ['areas_name', 'address'];
+        foreach ($names as $key => $name) {
+            $values[] = $this->full_address[$name] ?? '';
+        }
+        return implode(' ', $values);
     }
 
     /**
@@ -101,6 +126,18 @@ class Store extends Model
         $this->parseFill($params);
 
         DB::transaction(function () use ($params) {
+            if ($this->locate_area) {
+                $json = [
+                    'areas_name' => $this->locate_area->full_name,
+                    'address' => $params['address'] ?? '',
+                ];
+            } else {
+                $json = [
+                    'areas_name' => '',
+                    'address' => '',
+                ];
+            }
+            $this->full_address = $json;
             $this->save();
 
             StoreArea::saveManageStreets($params['street_ids'], $this);

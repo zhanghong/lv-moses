@@ -8,7 +8,7 @@ export function checkNameUnique(id, name) {
   };
 
   return request({
-    url: '/shops/1/store/agents/unique',
+    url: '/shop/store/agents/unique',
     method: 'post',
     data,
   });

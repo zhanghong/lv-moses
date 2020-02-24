@@ -164,7 +164,7 @@ export default {
     seo_keywords: 'SEO关键词',
     seo_description: 'SEO描述',
   },
-  store_item: {
+  store: {
     agent_id: '所属经销商',
     name: '门店名称',
     area_id: '所在区域',
@@ -185,6 +185,7 @@ export default {
     contact_phone: '联系方式',
     contact_address: '联系地址',
     store_count: '下属门店',
+    order: '排序编号',
   },
   product: {
     group_base: '基础信息',

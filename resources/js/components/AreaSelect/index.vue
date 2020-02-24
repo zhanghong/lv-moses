@@ -31,7 +31,6 @@
 </template>
 
 <script>
-// const addressData = require('china-area-data/v3/data');
 import { getDistricts } from '@/api/base/area';
 
 export default {
@@ -48,7 +47,6 @@ export default {
       province_id: '',
       city_id: '',
       district_id: '',
-      // provinces: addressData['86'],
       cities: {},
       districts: {},
     };
@@ -68,7 +66,6 @@ export default {
         this.city_id = '';
         return;
       }
-      // this.cities = addressData[newVal];
       if (!this.addressData[newVal]) {
         this.cities = {};
       } else {
@@ -85,7 +82,6 @@ export default {
         return;
       }
 
-      // this.districts = addressData[newVal];
       if (!this.addressData[newVal]) {
         this.districts = {};
       } else {
