@@ -5,23 +5,26 @@ export default {
     pagePermission: '页面权限',
     directivePermission: '指令权限',
     // 店铺管理
-    shopHome: '店铺管理',
+    shopHome: '店铺中心',
     shopConfig: '店铺设置',
-    shopStoreList: '门店管理',
+    shopStoreList: '门店列表',
     createShopStore: '添加门店',
     editShopStore: '编辑门店',
-    shopAgentList: '经销商管理',
+    shopAgentList: '经销商列表',
     createShopAgent: '添加经销商',
     editShopAgent: '编辑经销商',
     // 商品管理
-    shopProductHome: '商品管理',
-    shopProductList: '商品管理',
-    shopProductBrandList: '品牌管理',
+    shopProductHome: '商品中心',
+    shopProductList: '商品列表',
+    shopProductBrandList: '品牌列表',
     createShopProductBrand: '添加品牌',
     editShopProductBrand: '编辑品牌',
-    shopProductGroupList: '分类管理',
+    shopProductGroupList: '分类列表',
     createShopProductGroup: '添加分类',
     editShopProductGroup: '编辑分类',
+    shopProductStandardList: '规格属性',
+    createShopProductStandard: '添加规格',
+    editShopProductStandard: '编辑规格',
   },
   navbar: {
     logOut: '退出登录',
@@ -40,10 +43,6 @@ export default {
     thirdparty: '第三方登录',
     thirdpartyTips: '本地不能模拟，请结合自己业务进行模拟！！！',
   },
-  documentation: {
-    documentation: '文档',
-    github: 'Github 地址',
-  },
   permission: {
     addRole: '新增角色',
     editPermission: '编辑权限',
@@ -57,15 +56,6 @@ export default {
   guide: {
     description: '引导页对于一些第一次进入项目的人很有用，你可以简单介绍下项目的功能。本 Demo 是基于',
     button: '打开引导',
-  },
-  components: {
-    documentation: '文档',
-    tinymceTips: '富文本是管理后台一个核心的功能，但同时又是一个有很多坑的地方。在选择富文本的过程中我也走了不少的弯路，市面上常见的富文本都基本用过了，最终权衡了一下选择了Tinymce。更详细的富文本比较和介绍见',
-    dropzoneTips: '由于我司业务有特殊需求，而且要传七牛 所以没用第三方，选择了自己封装。代码非常的简单，具体代码你可以在这里看到 @/components/Dropzone',
-    stickyTips: '当页面滚动到预设的位置会吸附在顶部',
-    backToTopTips1: '页面滚动到指定位置会在右下角出现返回顶部按钮',
-    backToTopTips2: '可自定义按钮的样式、show/hide、出现的高度、返回的位置 如需文字提示，可在外部使用Element的el-tooltip元素',
-    imageUploadTips: '由于我在使用时它只有vue@1版本，而且和mockjs不兼容，所以自己改造了一下，如果大家要使用的话，优先还是使用官方版本。',
   },
   table: {
     dynamicTips1: '固定表头, 按照表头顺序排序',
@@ -101,6 +91,7 @@ export default {
     product: '商品',
     product_brand: '商品品牌',
     product_group: '商品分组',
+    product_standard: '规格',
   },
   base_fields: {
     creator: '创建用户',
@@ -178,6 +169,11 @@ export default {
     name: '分组名',
     parent_id: '上级分组',
     icon_url: 'ICON图标',
+  },
+  product_standard: {
+    name: '规格名',
+    selector_name: '属性值',
+    selectors: '属性值',
   },
   options: {
     waring: '警告',

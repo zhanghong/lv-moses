@@ -65,11 +65,8 @@ Route::group(['middleware' => 'api'], function () {
             Route::apiResource('product/index', 'Shop\Product\IndexController', ['parameters' => ['index' => 'product']]);
             Route::get('product/category', 'Shop\Product\IndexController@category');
             // 商品规格
-            Route::post('product/standards', 'Shop\Product\StandardController@store');
-            Route::post('product/standard_values/{property}', 'Shop\Product\StandardValueController@store');
-            // 商品参数
-            Route::post('product/params', 'Shop\Product\ParamController@store');
-            Route::post('product/param_values/{property}', 'Shop\Product\ParamValueController@store');
+            Route::apiResource('product/standards', 'Shop\Product\StandardController');
+            Route::post('product/standards/unique', 'Shop\Product\StandardController@unique');
             // 商品图片
             Route::post('product/images/main', 'Shop\Product\ImageController@main');
             Route::post('product/images/desc', 'Shop\Product\ImageController@desc');

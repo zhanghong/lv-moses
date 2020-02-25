@@ -4,7 +4,7 @@ namespace App\Http\Resources\Category;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryPropertyResource extends JsonResource
+class ShopPropertyResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,19 +14,12 @@ class CategoryPropertyResource extends JsonResource
      */
     public function toArray($request)
     {
-        $shop = $request->route('shop');
-        $query = $this->selectors();
-        if ($shop) {
-            $query = $query->where(function($query) use ($shop) {
-                $query->where('shop_id', 0)->orWhere('shop_id', $shop->id);
-            });
-        } else {
-            $query = $query->where('shop_id', 0);
-        }
+        $query = $this->selectors()->whereIn('shop_id', [0, $this->shop_id]);
 
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'order' => $this->order,
             'selectors' => $query->withOrder('ASC')->get()->map(function($item) {
                 return [
                     'id' => $item->id,

@@ -5,13 +5,17 @@ namespace App\Models\Category;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Model;
+use App\Models\Shop\Shop;
 
 class Property extends Model
 {
+    // 类型-参数
     public const TYPE_PARAMS = 1;
+    // 类型-规格
     public const TYPE_STANDARDS = 2;
-
+    //  显示方式-下拉框
     public const CHOICE_SELECT = 1;
+    //  显示方式-多选框
     public const CHOICE_CHECKBOX = 2;
 
     use SoftDeletes;
@@ -26,9 +30,25 @@ class Property extends Model
         'is_enabled',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        self::deleting(function ($model) {
+            $model->selectors()->each(function($selector) {
+                $selector->delete();
+            });
+        });
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
     public function selectors()
     {
-        return $this->hasMany(Selector::class);
+        return $this->hasMany(Selector::class, 'property_id');
     }
 
     public function categories()

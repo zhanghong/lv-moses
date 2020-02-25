@@ -28,13 +28,13 @@ class Model extends EloquentModel
     {
         parent::boot();
 
-        // self::saving(function (EloquentModel $model) {
-        //     $user_id = 0;
-        //     // if (Auth::user()) {
-        //     //     $user_id = Auth::user()->id;
-        //     // }
-        //     // $model->editor_id = $user_id;
-        // }
+        self::saving(function ($model) {
+            $user_id = 0;
+            if (Auth::user()) {
+                $user_id = Auth::user()->id;
+            }
+            $model->editor_id = $user_id;
+        });
     }
 
     public function editor()

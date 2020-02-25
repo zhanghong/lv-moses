@@ -40,22 +40,21 @@ class Selector extends Model
 
         if (empty($property)) {
             return false;
-        }
-
-        if (is_null($shop_id)) {
-            $shop_id = 0;
-        }
-
-        if (!in_array($property->shop_id, [0, $shop_id])) {
+        } else if (!is_array($values)) {
             return false;
         }
 
-        if (!is_array($values)) {
-            $values = explode(',', $values);
+        if (is_null($shop_id)) {
+            $shop_id = $property->shop_id;
         }
 
-        foreach ($values as $key => $name) {
-            $item = static::findOrCreateItem($property->id, $name, $shop_id);
+        foreach ($values as $key => $item) {
+            if (isset($item['id'])) {
+                // 已有属性值不允许删除
+                continue;
+            } else if (isset($item['name'])) {
+                $selector = static::findOrCreateItem($property->id, $item['name'], $shop_id);
+            }
         }
 
         $property->value_ids = static::where('property_id', $property->id)

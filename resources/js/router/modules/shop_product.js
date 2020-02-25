@@ -56,6 +56,26 @@ const shopProductRoutes = {
       meta: { title: 'editShopProductGroup', noCache: true },
       hidden: true,
     },
+    {
+      path: 'standard',
+      component: () => import('@/views/shop/product/standard/List'),
+      name: 'shopProductStandardList',
+      meta: { title: 'shopProductStandardList', icon: 'list' },
+    },
+    {
+      path: 'standard/create',
+      component: () => import('@/views/shop/product/standard/Create'),
+      name: 'createShopProductStandard',
+      meta: { title: 'createShopProductStandard', noCache: true },
+      hidden: true,
+    },
+    {
+      path: 'standard/edit/:id(\\d+)',
+      component: () => import('@/views/shop/product/standard/Edit'),
+      name: 'editShopProductStandard',
+      meta: { title: 'editShopProductStandard', noCache: true },
+      hidden: true,
+    },
   ],
 };
 
