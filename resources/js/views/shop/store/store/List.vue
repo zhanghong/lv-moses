@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <router-link :to="'/shop/store/create'">
+      <router-link :to="{ name: 'shopStoreList'}">
         <el-button class="filter-item" type="primary" icon="el-icon-plus">
           {{ $t('table.add') }}
         </el-button>
@@ -42,12 +42,12 @@
 
       <el-table-column align="center" label="" width="200">
         <template slot-scope="scope">
-          <router-link :to="'/shop/store/edit/'+scope.row.id">
+          <router-link :to="{ name: 'editShopStore', params: { id: scope.row.id }}">
             <el-button type="primary" size="small" icon="el-icon-edit">
               {{ $t('table.edit') }}
             </el-button>
           </router-link>
-          <el-button type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope.row.id, scope.row.name);">
+          <el-button type="danger" size="small" icon="el-icon-delete" @click="handleDelete(scope.row);">
             {{ $t('table.delete') }}
           </el-button>
         </template>
@@ -73,7 +73,7 @@ export default {
         area_full_name: this.$t('store.area_full_name'),
         auth_no: this.$t('store.auth_no'),
         staff_count: this.$t('store.staff_count'),
-        order: this.$t('store.order'),
+        order: this.$t('base_fields.order'),
       },
     };
   },
@@ -87,20 +87,20 @@ export default {
       this.list = data;
       this.loading = false;
     },
-    handleDelete(id, name) {
-      this.$confirm('确定要删除『' + name + '』吗？', this.$t('options.waring'), {
+    handleDelete(row) {
+      this.$confirm('确定要删除' + this.$t('model.store') + '『' + row.name + '』吗？', this.$t('options.waring'), {
         confirmButtonText: this.$t('table.confirm'),
         cancelButtonText: this.$t('table.cancel'),
         type: 'warning',
       }).then(() => {
-        modelResource.destroy(id).then(response => {
+        modelResource.destroy(row.id).then(response => {
           this.$message({
             type: 'success',
             message: this.$t('options.delete_success'),
           });
           this.getList();
-        }).catch(error => {
-          console.log(error);
+        }).catch(() => {
+          // nothing
         });
       }).catch(() => {
         this.$message({

@@ -20,21 +20,21 @@ class Group extends Model
     {
         parent::boot();
         // 监听 Category 的创建事件，用于初始化 path 和 level 字段值
-        static::saving(function (Category $category) {
-            $parent = $category->parent;
+        static::saving(function (Group $group) {
+            $parent = $group->parent;
             // 如果创建的是一个根类目
             if (empty($parent)) {
                 // 将层级设为 0
-                $category->level = 0;
+                $group->level = 0;
                 // 将 path 设为 -
-                $category->path  = '-';
+                $group->path  = '-';
             } else {
                 // 将层级设为父类目的层级 + 1
-                $category->level = $parent->level + 1;
+                $group->level = $parent->level + 1;
                 // 将 path 值设为父类目的 path 追加父类目 ID 以及最后跟上一个 - 分隔符
-                $category->path  = $parent->path.$parent->id.'-';
+                $group->path  = $parent->path.$parent->id.'-';
                 // 把Parent的is_directory更新为True
-                DB::table($category->getTable())
+                DB::table($group->getTable())
                     ->where('id', $parent->id)
                     ->where('is_directory', 0)
                     ->update(['is_directory' => 1]);
@@ -44,12 +44,12 @@ class Group extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Group::class);
     }
 
     public function children()
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(Group::class, 'parent_id');
     }
 
     public function products()

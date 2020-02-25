@@ -56,9 +56,11 @@ Route::group(['middleware' => 'api'], function () {
 
             // 商品模块
             // 商品分类
-            Route::apiResource('product/categories', 'Shop\Product\CategoryController');
+            Route::apiResource('product/groups', 'Shop\Product\GroupController');
+            Route::post('product/groups/unique', 'Shop\Product\GroupController@unique');
             // 商品品牌
             Route::apiResource('product/brands', 'Shop\Product\BrandController');
+            Route::post('product/brands/unique', 'Shop\Product\BrandController@unique');
             // 商品管理
             Route::apiResource('product/index', 'Shop\Product\IndexController', ['parameters' => ['index' => 'product']]);
             Route::get('product/category', 'Shop\Product\IndexController@category');

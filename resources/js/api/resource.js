@@ -47,6 +47,22 @@ class Resource {
       method: 'delete',
     });
   }
+  unique(name, value, id = undefined) {
+    const data = {
+      name: name,
+      value: value,
+    };
+
+    if (id !== undefined) {
+      data['id'] = id;
+    }
+
+    return request({
+      url: '/' + this.uri + '/unique',
+      method: 'post',
+      data: data,
+    });
+  }
 }
 
 export { Resource as default };

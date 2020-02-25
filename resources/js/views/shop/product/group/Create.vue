@@ -6,8 +6,7 @@
 import ModelForm from './Form';
 
 export default {
-  name: 'CreateForm',
+  name: 'EditForm',
   components: { ModelForm },
 };
 </script>
-

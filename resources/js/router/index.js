@@ -12,7 +12,8 @@ Vue.use(Router);
 /* Layout */
 import Layout from '@/layout';
 import errorRoutes from './modules/error';
-import shopRoutes from './modules/shop';
+import shopBaseRoutes from './modules/shop_base';
+import shopProductRoutes from './modules/shop_product';
 
 /* Router for modules */
 
@@ -85,7 +86,8 @@ export const constantRoutes = [
       },
     ],
   },
-  shopRoutes,
+  shopProductRoutes,
+  shopBaseRoutes,
 ];
 
 export const asyncRoutes = [

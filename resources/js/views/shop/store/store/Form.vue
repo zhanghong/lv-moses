@@ -61,7 +61,7 @@
       </el-form-item>
 
       <el-form-item :label="fields.order" prop="order">
-        <el-input v-model.number="postForm.order" placeholder="请输入排序ID" />
+        <el-input v-model.number="postForm.order" placeholder="编号小的排在前面" />
       </el-form-item>
 
       <el-form-item>
@@ -81,7 +81,6 @@
 
 <script>
 import Resource from '@/api/resource';
-import { checkNameUnique } from '@/api/shop/store/store';
 import AreaSelect from '@/components/AreaSelect';
 import RegionSelect from './components/RegionSelect';
 
@@ -103,7 +102,7 @@ const defaultForm = {
 const modelResource = new Resource('shop/store/index');
 
 export default {
-  name: 'Form',
+  name: 'ModelForm',
   components: {
     AreaSelect,
     RegionSelect,
@@ -116,16 +115,16 @@ export default {
   },
   data() {
     var validateNameUnique = (rule, value, callback) => {
-      checkNameUnique(this.postForm.id, this.postForm.name)
+      modelResource
+        .unique('name', value, this.postForm.id)
         .then(response => {
           if (response.code !== 200) {
-            callback(new Error('门店名称已存在'));
+            callback(new Error('门店名称 已存在'));
           } else {
             callback();
           }
         })
-        .catch(error => {
-          console.log(error);
+        .catch(() => {
           callback();
         });
     };
@@ -151,7 +150,7 @@ export default {
         contact_phone: this.$t('store.contact_phone'),
         streets: this.$t('store.streets'),
         staff_count: this.$t('store.staff_count'),
-        order: this.$t('store.order'),
+        order: this.$t('base_fields.order'),
       },
       rules: {
         agent_id: [
@@ -288,8 +287,7 @@ export default {
                 type: 'success',
                 duration: 5 * 1000,
               });
-              this.loading = false;
-              this.$router.push({ path: '/shop/store' });
+              this.goToList();
             }).catch(error => {
               console.log(error);
               this.loading = false;
@@ -302,18 +300,21 @@ export default {
                 type: 'success',
                 duration: 5 * 1000,
               });
+              this.goToList();
+            }).catch(() => {
               this.loading = false;
-              this.$router.push({ path: '/shop/store' });
-            }).catch(error => {
-              this.loading = false;
-              console.log(error);
             });
         }
       });
     },
     onCancel() {
-      this.loading = false;
-      this.$router.push({ path: '/shop/store' });
+      this.goToList();
+    },
+    goToList() {
+      if (this.loading) {
+        this.loading = false;
+      }
+      this.$router.push({ name: 'shopStoreList' });
     },
   },
 };

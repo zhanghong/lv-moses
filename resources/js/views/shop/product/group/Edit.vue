@@ -1,12 +1,12 @@
 <template>
-  <model-form :is-edit="false" />
+  <model-form :is-edit="true" />
 </template>
 
 <script>
 import ModelForm from './Form';
 
 export default {
-  name: 'CreateForm',
+  name: 'EditForm',
   components: { ModelForm },
 };
 </script>

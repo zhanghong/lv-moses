@@ -2,44 +2,44 @@
 
 namespace App\Http\Controllers\Shop\Product;
 
-use App\Models\Product\Brand;
+use App\Models\Product\Group;
 use App\Exceptions\LogicException;
 use App\Http\Requests\Base\FieldUniqueRequest;
-use App\Http\Requests\Shop\Product\BrandRequest;
-use App\Http\Resources\Product\BrandResource;
+use App\Http\Requests\Shop\Product\GroupRequest;
+use App\Http\Resources\Product\GroupResource;
 use App\Http\Controllers\Shop\Controller;
 
-class BrandController extends Controller
+class GroupController extends Controller
 {
     public function index()
     {
-        $paginate = Brand::withOrder('ASC')
+        $paginate = Group::withOrder('ASC')
                         ->where('shop_id', $this->shop->id)
                         ->paginate();
-        return BrandResource::collection($paginate);
+        return GroupResource::collection($paginate);
     }
 
-    public function store(BrandRequest $request)
+    public function store(GroupRequest $request)
     {
         $params = $request->all();
-        $brand = new Brand;
-        $brand->parseFill($params);
-        $brand->shop()->associate($this->shop);
-        $brand->save();
-        return new BrandResource($brand);
+        $group = new Group;
+        $group->parseFill($params);
+        $group->shop()->associate($this->shop);
+        $group->save();
+        return new GroupResource($group);
     }
 
-    public function show(Brand $brand)
+    public function show(Group $group)
     {
-        return new BrandResource($brand);
+        return new GroupResource($group);
     }
 
-    public function update(BrandRequest $request, Brand $brand)
+    public function update(GroupRequest $request, Group $group)
     {
         $params = $request->all();
-        $brand->parseFill($params);
-        $brand->save();
-        return new BrandResource($brand);
+        $group->parseFill($params);
+        $group->save();
+        return new GroupResource($group);
     }
 
     // 验证店铺名称等字段值是否唯一
@@ -56,7 +56,7 @@ class BrandController extends Controller
             $wheres[] = ['id', '<>', $id];
         }
         try {
-            $flag = Brand::checkAttrUnique($name, $value, $wheres);
+            $flag = Group::checkAttrUnique($name, $value, $wheres);
         } catch (LogicException $e) {
             return $e;
         }
@@ -64,9 +64,9 @@ class BrandController extends Controller
         return ['code' => 200, 'message' => '字段值唯一'];
     }
 
-    public function destroy(Brand $brand)
+    public function destroy(Group $group)
     {
-        $brand->delete();
+        $group->delete();
         return $this->responseData([]);
     }
 }

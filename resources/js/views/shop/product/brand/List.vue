@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <router-link :to="{ name: 'createShopStore'}">
+      <router-link :to="{ name: 'createShopProductBrand'}">
         <el-button class="filter-item" type="primary" icon="el-icon-plus">
           {{ $t('table.add') }}
         </el-button>
@@ -16,27 +16,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="fields.store_count">
+      <el-table-column align="center" :label="fields.description">
         <template slot-scope="scope">
-          <span>{{ scope.row.store_count }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" :label="fields.contact_name" width="200">
-        <template slot-scope="scope">
-          <span>{{ scope.row.contact_name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" :label="fields.contact_phone">
-        <template slot-scope="scope">
-          <span>{{ scope.row.contact_phone }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" :label="fields.contact_address">
-        <template slot-scope="scope">
-          <span>{{ scope.row.contact_address }}</span>
+          <span>{{ scope.row.description }}</span>
         </template>
       </el-table-column>
 
@@ -48,7 +30,7 @@
 
       <el-table-column align="center" label="" width="350">
         <template slot-scope="scope">
-          <router-link :to="{ name: 'editShopStore', params: { id: scope.row.id }}">
+          <router-link :to="{ name: 'editShopProductBrand', params: { id: scope.row.id }}">
             <el-button type="primary" size="small" icon="el-icon-edit">
               {{ $t('table.edit') }}
             </el-button>
@@ -65,20 +47,18 @@
 
 <script>
 import Resource from '@/api/resource';
-const agentResource = new Resource('shop/store/agents');
+const modelResource = new Resource('shop/product/brands');
 
 export default {
-  name: 'StoreAgentList',
+  name: 'ProductBrandList',
   data() {
     return {
       list: [],
       loading: true,
       fields: {
-        name: this.$t('store_agent.name'),
-        contact_name: this.$t('store_agent.contact_name'),
-        contact_phone: this.$t('store_agent.contact_phone'),
-        contact_address: this.$t('store_agent.contact_address'),
-        store_count: this.$t('store_agent.store_count'),
+        name: this.$t('product_brand.name'),
+        logo_url: this.$t('product_brand.logo_url'),
+        description: this.$t('product_brand.description'),
         order: this.$t('base_fields.order'),
       },
     };
@@ -89,17 +69,17 @@ export default {
   methods: {
     async getList() {
       this.loading = true;
-      const { data } = await agentResource.list({});
+      const { data } = await modelResource.list({});
       this.list = data;
       this.loading = false;
     },
     handleDelete(row) {
-      this.$confirm('确定要删除' + this.$t('model.store_agent') + '『' + row.name + '』吗？', this.$t('options.waring'), {
+      this.$confirm('确定要删除' + this.$t('model.product_brand') + '『' + row.name + '』吗？', this.$t('options.waring'), {
         confirmButtonText: this.$t('table.confirm'),
         cancelButtonText: this.$t('table.cancel'),
         type: 'warning',
       }).then(() => {
-        agentResource.destroy(row.id).then(response => {
+        modelResource.destroy(row.id).then(response => {
           this.$message({
             type: 'success',
             message: this.$t('options.delete_success'),

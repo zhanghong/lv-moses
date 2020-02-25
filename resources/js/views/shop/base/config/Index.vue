@@ -71,7 +71,7 @@ export default {
       checkNameUnique(this.shop.name)
         .then(response => {
           if (response.code !== 200) {
-            callback(new Error('店铺名称已存在'));
+            callback(new Error('店铺名称 已存在'));
           } else {
             callback();
           }
@@ -138,8 +138,8 @@ export default {
           this.shop = response.data;
           this.isEdit = false;
         })
-        .catch(error => {
-          console.log(error.response.status);
+        .catch(() => {
+          // nothing
         });
     },
     showFrom() {
@@ -156,9 +156,8 @@ export default {
               this.loading = false;
               this.isEdit = false;
             })
-            .catch(error => {
+            .catch(() => {
               this.loading = false;
-              console.log(error.response.status);
               this.$message('店铺信息更新失败');
             });
         } else {

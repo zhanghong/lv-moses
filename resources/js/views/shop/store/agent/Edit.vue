@@ -1,13 +1,13 @@
 <template>
-  <agent-form :is-edit="true" />
+  <model-form :is-edit="true" />
 </template>
 
 <script>
-import AgentForm from './Form';
+import ModelForm from './Form';
 
 export default {
-  name: 'EditForm',
-  components: { AgentForm },
+  name: 'CreateForm',
+  components: { ModelForm },
 };
 </script>
 
