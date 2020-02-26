@@ -33,7 +33,7 @@ class StandardRequest extends FormRequest
     {
         return [
             'name' => '规格名',
-            'values' => '规格值',
+            'selectors' => '属性值',
         ];
     }
 }

@@ -11,9 +11,8 @@
 
       <el-form-item :label="fields.selector_name" prop="selector_name">
         <el-input v-model.trim="postForm.selector_name" autocomplete="off" placeholder="请输入属性值" @keyup.enter.native="addSelector" />
-      </el-form-item>
+        <el-button v-show="canAddTag" type="primary" @click.prevent="addSelector">添加</el-button>
 
-      <el-form-item :label="''" prop="selectors">
         <el-tag v-for="tag in postForm.selectors" :key="tag.name">
           {{ tag.name }}
         </el-tag>
@@ -67,38 +66,36 @@ export default {
     };
 
     // 验证属性值是否存在
-    var validateSelectorNameUnique = (rule, value, callback) => {
-      let name = '';
-      let idx = -1;
+    var validateSelectos = (rule, value, callback) => {
+      if (this.submitType === 'addTag') {
+        let name = '';
+        let idx = -1;
 
-      if (value !== undefined) {
-        name = value.trim();
-      }
+        if (value !== undefined) {
+          name = value.trim();
+        }
 
-      if (name === '') {
-        return false;
-      }
+        if (name === '') {
+          return false;
+        }
 
-      idx = this.postForm.selectors.findIndex(item => item.name === name);
-      if (idx >= 0) {
-        callback(new Error('规格值已存在'));
+        idx = this.postForm.selectors.findIndex(item => item.name === name);
+        if (idx >= 0) {
+          callback(new Error('属性值 已存在'));
+          return false;
+        }
+      } else if (!this.postForm.selectors.length) {
+        callback(new Error('属性值 不能为空'));
         return false;
       }
 
       callback();
     };
 
-    var validateSelectorIsEmpty = (rule, value, callback) => {
-      if (this.$isEmpty(this.postForm.selectors)) {
-        callback(new Error('属性值 不能为空'));
-      } else {
-        callback();
-      }
-    };
-
     return {
       loading: true,
       formTitle: '',
+      submitType: '',
       tempRoute: {},
       postForm: Object.assign({}, defaultForm),
       fields: {
@@ -113,12 +110,7 @@ export default {
           { validator: validateNameUnique, trigger: 'blur' },
         ],
         selector_name: [
-          // { required: true, message: '属性名 不能为空', trigger: 'blur' },
-          // { min: 2, max: 10, message: '属性名 长度在 2 到 10 个字符', trigger: 'blur' },
-          { validator: validateSelectorNameUnique, trigger: 'blur' },
-        ],
-        selectors: [
-          { validator: validateSelectorIsEmpty, trigger: 'blur' },
+          { validator: validateSelectos, trigger: 'blur' },
         ],
         order: [
           { required: true, message: '排序编号 不能为空', trigger: 'change' },
@@ -126,6 +118,14 @@ export default {
         ],
       },
     };
+  },
+  computed: {
+    canAddTag() {
+      if (this.$isEmpty(this.postForm.selector_name)) {
+        return false;
+      }
+      return true;
+    },
   },
   created() {
     if (this.isEdit) {
@@ -152,6 +152,7 @@ export default {
         });
     },
     onSubmit() {
+      this.submitType = 'submitForm';
       this.$refs.postForm.validate(valid => {
         if (!valid) {
           return false;
@@ -195,6 +196,7 @@ export default {
       this.$router.push({ name: 'shopProductStandardList' });
     },
     addSelector() {
+      this.submitType = 'addTag';
       this.$refs.postForm.validateField('selector_name', error => {
         if (!error) {
           const name = this.postForm.selector_name;
