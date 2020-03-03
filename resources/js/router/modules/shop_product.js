@@ -12,9 +12,23 @@ const shopProductRoutes = {
   children: [
     {
       path: 'index',
-      component: () => import('@/views/shop/product/brand/List'),
-      name: 'shopProductList',
-      meta: { title: 'shopProductList', icon: 'list' },
+      component: () => import('@/views/shop/product/product/List'),
+      name: 'shopNormalProductList',
+      meta: { title: 'shopNormalProductList', icon: 'list' },
+    },
+    {
+      path: 'index/create',
+      component: () => import('@/views/shop/product/product/Create'),
+      name: 'createShopNormalProduct',
+      meta: { title: 'createShopNormalProduct', noCache: true },
+      hidden: true,
+    },
+    {
+      path: 'index/edit/:id(\\d+)',
+      component: () => import('@/views/shop/product/product/Edit'),
+      name: 'editShopNormalProduct',
+      meta: { title: 'editShopNormalProduct', noCache: true },
+      hidden: true,
     },
     {
       path: 'brand',

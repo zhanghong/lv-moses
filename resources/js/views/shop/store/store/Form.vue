@@ -211,8 +211,8 @@ export default {
             return item.id;
           });
         })
-        .catch(error => {
-          console.log(error);
+        .catch(() => {
+          // nothing
         })
         .finally(() => {
           this.loading = false;

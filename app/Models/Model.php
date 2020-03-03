@@ -33,6 +33,7 @@ class Model extends EloquentModel
             if (Auth::user()) {
                 $user_id = Auth::user()->id;
             }
+
             $model->editor_id = $user_id;
         });
     }
@@ -40,6 +41,11 @@ class Model extends EloquentModel
     public function editor()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeShoped($query, $shop_id)
+    {
+        return $query->where('shop_id', $shop_id);
     }
 
     /**

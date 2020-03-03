@@ -4,6 +4,7 @@ namespace App\Http\Requests\Shop\Store;
 
 use App\Models\Store\Agent;
 use App\Models\Store\Store;
+use App\Exceptions\LogicException;
 use App\Http\Requests\Shop\FormRequest;
 
 class StoreRequest extends FormRequest

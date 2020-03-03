@@ -5,47 +5,25 @@ import request from '@/utils/request';
  */
 class Resource {
   constructor(uri) {
-    this.uri = uri;
+    this.uri = '/' + uri;
   }
   list(query) {
-    return request({
-      url: '/' + this.uri,
-      method: 'get',
-      params: query,
-    });
+    return this.request('get', null, null, query);
   }
   select(query) {
-    return request({
-      url: '/' + this.uri + '/list',
-      method: 'get',
-      params: query,
-    });
+    return this.request('get', 'list', null, query);
   }
   get(id) {
-    return request({
-      url: '/' + this.uri + '/' + id,
-      method: 'get',
-    });
+    return this.request('get', null, id);
   }
   store(resource) {
-    return request({
-      url: '/' + this.uri,
-      method: 'post',
-      data: resource,
-    });
+    return this.request('post', null, null, resource);
   }
   update(id, resource) {
-    return request({
-      url: '/' + this.uri + '/' + id,
-      method: 'put',
-      data: resource,
-    });
+    return this.request('put', null, id, resource);
   }
   destroy(id) {
-    return request({
-      url: '/' + this.uri + '/' + id,
-      method: 'delete',
-    });
+    return this.request('delete', null, id);
   }
   unique(name, value, id = undefined) {
     const data = {
@@ -57,9 +35,35 @@ class Resource {
       data['id'] = id;
     }
 
+    return this.request('post', 'unique', null, data);
+  }
+  form() {
+    return this.request('post', 'form');
+  }
+  isPrsent(value) {
+    if (value === undefined) {
+      return false;
+    } else if (value === null) {
+      return false;
+    } else if (value === '') {
+      return false;
+    }
+    return true;
+  }
+  request(method, name, id = null, data = {}) {
+    let url = this.uri;
+
+    if (this.isPrsent(id)) {
+      url += '/' + id;
+    }
+
+    if (this.isPrsent(name)) {
+      url += '/' + name;
+    }
+
     return request({
-      url: '/' + this.uri + '/unique',
-      method: 'post',
+      url: url,
+      method: method,
       data: data,
     });
   }

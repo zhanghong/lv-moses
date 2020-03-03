@@ -7,11 +7,6 @@ use App\Models\Category\StandardProperty as Base;
 
 class StandardProperty extends Base
 {
-    public function scopeShoped($query, $shop_id)
-    {
-        return $query->where('shop_id', $shop_id);
-    }
-
     /**
      * 允许检测值唯一是否唯一的字段列表
      * @Author   zhanghong(Laifuzi)
@@ -40,12 +35,32 @@ class StandardProperty extends Base
 
     public function updateInfo($params)
     {
-        $this->parseFill($params);
-        if ($this->save()) {
-            $selectors = $params['selectors'] ?? [];
-            Selector::attachPropertyValues($this, $params['selectors']);
-        }
+        DB::transaction(function () use ($params) {
+            $this->parseFill($params);
+            if ($this->save()) {
+                $selectors = $params['selectors'] ?? [];
+                Selector::attachPropertyValues($this, $params['selectors']);
+            }
+        });
 
         return $this;
+    }
+
+    public function productChoided($product_id)
+    {
+        $list = DB::table('category_properties a')
+                    ->join('category_selectors b', 'a.id', '=', 'b.property_id')
+                    ->join('product_sku_properties c', 'b.id', '=', 'c.selector_id')
+                    ->select('a.id AS property_id', 'a.name AS property_name', 'b.id AS selector_id', 'b.name AS selector_name')
+                    ->where([
+                        ['a.type', '=', static::TYPE_STANDARDS],
+                        ['c.product_id', '=', $product_id],
+                    ])
+                    ->whereNull('a.deleted_at')
+                    ->whereNull('b.deleted_at')
+                    ->groupBy('a.id, b.id')
+                    ->having('COUNT(c.id) > 0')
+                    ->get();
+        return $list;
     }
 }

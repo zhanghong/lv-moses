@@ -16,7 +16,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="fields.selectors">
+      <el-table-column :label="fields.selectors">
         <template slot-scope="scope">
           <el-tag v-for="tag in scope.row.selectors" :key="tag.id">
             {{ tag.name }}

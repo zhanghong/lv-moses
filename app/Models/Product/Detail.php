@@ -5,6 +5,12 @@ namespace App\Models\Product;
 class Detail extends Model
 {
     protected $table = 'product_details';
+    protected $appends = ['editor_id'];
+
+    public function setEditorIdAttribute($value)
+    {
+        // nothing
+    }
 
     public function product()
     {

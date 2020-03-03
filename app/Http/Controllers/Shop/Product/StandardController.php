@@ -32,15 +32,15 @@ class StandardController extends Controller
         return new ShopPropertyResource($property);
     }
 
-    public function show(Request $request)
+    public function show($id)
     {
-        $property = $this->findById($request->standard, true);
+        $property = $this->findById($id, true);
         return new ShopPropertyResource($property);
     }
 
     public function update(StandardRequest $request, $id)
     {
-        $property = $this->findById($request->standard, true);
+        $property = $this->findById($request->id, true);
         $params = $request->all();
         $property->updateInfo($params);
         return new ShopPropertyResource($property);

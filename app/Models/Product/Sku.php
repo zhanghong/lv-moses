@@ -63,40 +63,60 @@ class Sku extends Model
      */
     public static function syncByProduct($params, $product)
     {
-        $ids = [];
+        $skus = [];
+        $sku_ids = [];
+
         foreach ($params as $key => $item) {
+            if (empty($item['selector_ids'])) {
+                $selector_ids = [];
+            }else if (is_array($item['selector_ids'])) {
+                $selector_ids = $item['selector_ids'];
+            } else {
+                $selector_ids = explode(',', $item['selector_ids']);
+            }
+
+            if (empty($selector_ids)) {
+                $selectors = collect([]);
+            } else {
+                $selectors = Selector::whereIn('id', $selector_ids)
+                        ->where(function($query) use ($product) {
+                            $query->where('shop_id', 0)->orWhere('shop_id', $product->shop_id);
+                        })
+                        ->orderBY('id', 'ASC')
+                        ->get();
+            }
+
+            $selector_ids = $selectors->map(function ($item) {
+                                            return $item->id;
+                                        })->join('|');
+
+            // 可以使用已删除sku
+            $query = static::withTrashed()->where('product_id', $product->id);
             $id = $item['id'] ?? null;
             if ($id) {
-                $sku = static::where('product_id', $product->id)->where('id', $id)->first();
+                $query = $query->where('id', $id);
             } else {
+                $query = $query->where('selector_ids', $selector_ids);
+            }
+
+            if (!$sku = $query->first()) {
                 $sku = new static;
                 $sku->shop_id = $product->shop_id;
                 $sku->product_id = $product->id;
+            } else if ($sku->deleted_at) {
+                $sku->restore();
             }
 
-            if (!$sku) {
-                continue;
-            }
+            $sku->selector_ids = $selector_ids;
+            $sku->properties_content = $selectors->mapWithKeys(function ($item) {
+                                                        return [$item->property_id => $item->id];
+                                                    });
 
             $sku->parseFill($item);
-            if (!$sku->id) {
-                if (empty($item['properies'])) {
-                    $sku->properties_content = [];
-                } else {
-                    $sku->properties_content = Selector::withOrder('ASC')->whereIn('id', array_values($item['properies']))
-                                ->where(function($query) use ($sku) {
-                                    $query->where('shop_id', 0)->orWhere('shop_id', $sku->shop_id);
-                                })
-                                ->get()
-                                ->mapWithKeys(function ($item) {
-                                    return [$item->property_id => $item->id];
-                                });
-                }
-                $sku->save();
-            }
+            $sku->save();
 
             $first_main_image = null;
-            $main_image_ids = $item['main_image_ids'] ?? [];
+            $main_image_ids = $item['image_ids'] ?? [];
             if ($main_image_ids) {
                 Upload::ownSet($sku->shop, Product::UPLOAD_TYPE_IMAGE_MAIN, $sku, $main_image_ids);
                 $first_main_image = Upload::ownFirst($sku->shop, Product::UPLOAD_TYPE_IMAGE_MAIN, $sku, ['order' => 'ASC']);
@@ -110,7 +130,18 @@ class Sku extends Model
                 $sku->main_image_url = '';
             }
             $sku->save();
+
+            array_push($skus, $sku);
+            array_push($sku_ids, $sku->id);
         }
+
+        $query = static::where('product_id', $product->id);
+        if (!empty($sku_ids)) {
+            $query = $query->whereNotIn('id', $sku_ids);
+        }
+        $query->delete();
+
+        return $skus;
     }
 
     /**

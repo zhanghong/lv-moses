@@ -3,7 +3,9 @@
 namespace App\Models\Product;
 
 use DB;
+use Carbon\Carbon;
 use App\Models\Base\Upload;
+use App\Models\Category\Property;
 use App\Exceptions\DisallowException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -24,23 +26,32 @@ class Product extends Model
     // 上传图片验证
     public const IMAGE_MAIN_MIN_WIDTH = 1242;
     public const IMAGE_MAIN_MIN_HEIGHT = 698;
-    public const IMAGE_MAIN_MAX_SIZE = 1024; //1024kb
+    public const IMAGE_MAIN_MAX_SIZE = 5120; //1024kb
     public const IMAGE_DESC_MIN_WIDTH = 400;
     public const IMAGE_DESC_MAX_HEIGHT = 1000;
-    public const IMAGE_DESC_MAX_SIZE = 1024;
+    public const IMAGE_DESC_MAX_SIZE = 5120;
 
     protected $casts = [
-
+        'is_published' => 'boolean',
+        'min_market_price' => 'decimal:2',
+        'max_market_price' => 'decimal:2',
+        'min_sell_price' => 'decimal:2',
+        'max_sell_price' => 'decimal:2',
     ];
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
+    // public function category()
+    // {
+    //     return $this->belongsTo(Category::class);
+    // }
 
     public function brand()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
     }
 
     public function detail()
@@ -54,6 +65,17 @@ class Product extends Model
     }
 
     /**
+     * 允许检测值唯一是否唯一的字段列表
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-01-14
+     * @return   array
+     */
+    protected static function allowUniqueAttrs()
+    {
+        return ['title'];
+    }
+
+    /**
      * 允许表单更新字段列表
      * @Author   zhanghong(Laifuzi)
      * @DateTime 2020-01-17
@@ -61,15 +83,57 @@ class Product extends Model
      */
     public static function parseFields() {
         return collect([
-            ['name' => 'base_category_id', 'type' => 'int'],
-            ['name' => 'category_id', 'type' => 'int'],
+            ['name' => 'brand_id', 'type' => 'int'],
+            ['name' => 'group_id', 'type' => 'int'],
             ['name' => 'type', 'type' => 'string', 'default' => static::TYPE_NORMAL],
             ['name' => 'title', 'type' => 'string', 'default' => ''],
             ['name' => 'long_title', 'type' => 'string', 'default' => ''],
             ['name' => 'description', 'type' => 'string'],
             ['name' => 'fiction_count', 'type' => 'int', 'default' => 0],
+            ['name' => 'is_published', 'type' => 'boolean', 'default' => false],
             ['name' => 'order', 'type' => 'integer'],
         ]);
+    }
+
+    public function getMarketPriceRangeAttribute()
+    {
+        if ($this->min_market_price > 0 && $this->max_market_price > 0) {
+            return $this->min_market_price . '~' . $this->max_market_price;
+        } else if ($this->min_market_price > 0) {
+            return $this->min_market_price . '~';
+        } else if ($this->max_market_price > 0) {
+            return '~' . $this->max_market_price;
+        } else {
+            return '--';
+        }
+    }
+
+    public function getSellPriceRangeAttribute()
+    {
+        if ($this->min_sell_price > 0 && $this->max_sell_price > 0) {
+            return $this->min_sell_price . '~' . $this->max_sell_price;
+        } else if ($this->min_sell_price > 0) {
+            return $this->min_sell_price . '~';
+        } else if ($this->max_sell_price > 0) {
+            return '~' . $this->max_sell_price;
+        } else {
+            return '--';
+        }
+    }
+
+    public function getMainImagesAttribute()
+    {
+        return Upload::ownGet($this->shop, static::UPLOAD_TYPE_IMAGE_MAIN, $this);
+    }
+
+    public function getDescImagesAttribute()
+    {
+        return Upload::ownGet($this->shop, static::UPLOAD_TYPE_IMAGE_DESC, $this);
+    }
+
+    public function getChoicedSelectorsAttribute()
+    {
+        return SkuProperty::productChoicedProperties($this->id);
     }
 
     /**
@@ -86,20 +150,20 @@ class Product extends Model
         }
         $this->parseFill($params);
 
-        $flags = 0;
-        $flag_fields = ['is_sell', 'is_new', 'is_hot', 'is_best'];
-        foreach ($flag_fields as $idx => $name) {
-            $value = $params[$name] ?? 0 ;
-            if ($value) {
-                $flag += $idx * 2 + 1;
+        $dirty = $this->getDirty();
+        if (!$this->id || $this->wasChanged('is_published')) {
+            if (!$this->is_published) {
+                $this->published_at = null;
+            } else {
+                $this->published_at = Carbon::now()->toDateTimeString();
             }
         }
-        $this->flags = $flags;
-        // DB::transaction(function () use ($params) {
+
+        DB::transaction(function () use ($params) {
             $this->save();
 
             $first_main_image = null;
-            $main_image_ids = $params['main_image_ids'] ?? [];
+            $main_image_ids = $params['image_ids'] ?? [];
             if ($main_image_ids) {
                 Upload::ownSet($this->shop, static::UPLOAD_TYPE_IMAGE_MAIN, $this, $main_image_ids);
                 $first_main_image = Upload::ownFirst($this->shop, static::UPLOAD_TYPE_IMAGE_MAIN, $this, ['order' => 'ASC']);
@@ -122,9 +186,59 @@ class Product extends Model
             Detail::updateOrCreateByProduct($params, $this);
 
             $param_skus = $params['skus'] ?? [];
+            if (empty($param_skus)) {
+                $param_skus = [
+                    [
+                        'market_price' => $params['market_price'] ?? 0,
+                        'sell_price' => $params['sell_price'] ?? 0,
+                        'stock' => $params['stock'] ?? 0,
+                        'selector_ids' => '',
+                    ]
+                ];
+            }
             // 同步更新商品的SKU
             Sku::syncByProduct($param_skus, $this);
-        // });
+            $this->updateSkuRange();
+        });
         return $this;
+    }
+
+    /**
+     * 更新Sku概况统计信息
+     * @Author   zhanghong(Laifuzi)
+     * @DateTime 2020-03-03
+     * @return   [type]             [description]
+     */
+    public function updateSkuRange()
+    {
+        $selects = [
+            DB::raw('MAX(sell_price) AS max_sell_price'),
+            DB::raw('MIN(sell_price) AS min_sell_price'),
+            DB::raw('MAX(market_price) AS max_market_price'),
+            DB::raw('MAX(market_price) AS min_market_price'),
+            DB::raw("SUM(IF(selector_ids='', 1, 0)) AS default_count"),
+        ];
+        $item = Sku::select($selects)
+                    ->where('product_id', $this->id)
+                    ->first();
+        if (empty($item)) {
+            $this->max_sell_price = 0;
+            $this->min_sell_price = 0;
+            $this->max_market_price = 0;
+            $this->min_market_price = 0;
+            $this->stock = 0;
+            $this->has_skus = false;
+        } else {
+            $this->max_sell_price = $item->max_sell_price;
+            $this->min_sell_price = $item->min_sell_price;
+            $this->max_market_price = $item->max_market_price;
+            $this->min_market_price = $item->min_market_price;
+            $this->has_skus = ($item->default_count > 0) ? false : true ;
+
+            $min = Sku::where('product_id', $this->id)->orderBy('sell_price', 'ASC')->first();
+            $this->stock = $min->stock;
+        }
+
+        $this->save();
     }
 }
