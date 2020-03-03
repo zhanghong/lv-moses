@@ -10,15 +10,14 @@
 
     <el-table v-loading="loading" :data="list" border fit highlight-current-row>
 
-      <el-table-column align="center" :label="fields.title" width="100">
+      <el-table-column align="left" :label="fields.title" width="400px">
         <template slot-scope="scope">
-          <span>{{ scope.row.title }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" :label="fields.main_image_url">
-        <template slot-scope="scope">
-          <el-image v-if="scope.row.main_image_url !== undefined" :src="scope.row.main_image_url" style="width: 100px; height: 100px" fit="cover" />
+          <dl class="product-titles">
+            <dt class="field-img">
+              <img :src="scope.row.main_image_url" width="50px" height="50px" fit="cover">
+            </dt>
+            <dd class="field-title">{{ scope.row.title }}</dd>
+          </dl>
         </template>
       </el-table-column>
 
@@ -38,27 +37,26 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="fields.sold_count">
+      <el-table-column align="center" :label="fields.is_published">
         <template slot-scope="scope">
-          <span>{{ scope.row.sold_count }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" :label="fields.market_price">
-        <template slot-scope="scope">
-          <span>{{ scope.row.market_price }}</span>
+          <span v-if="scope.row.is_published">
+            已发布
+          </span>
+          <span v-else>
+            未发布
+          </span>
         </template>
       </el-table-column>
 
       <el-table-column align="center" :label="fields.sell_price">
         <template slot-scope="scope">
-          <span>{{ scope.row.sell_price }}</span>
+          {{ scope.row.sell_price_range }}
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="fields.order">
+      <el-table-column align="center" :label="fields.sold_count">
         <template slot-scope="scope">
-          <span>{{ scope.row.order }}</span>
+          {{ scope.row.sold_count }}
         </template>
       </el-table-column>
 
@@ -97,6 +95,8 @@ export default {
         sold_count: this.$t('product.sold_count'),
         market_price: this.$t('product.market_price'),
         sell_price: this.$t('product.sell_price'),
+        stock: this.$t('product.stock'),
+        is_published: this.$t('product.is_published'),
         order: this.$t('base_fields.order'),
       },
     };
@@ -136,3 +136,14 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.product-titles{
+  .field-img{
+    float: left;
+    margin-right: 10px;
+  }
+  field-title{
+    line-height: 25px;
+  }
+}
+</style>

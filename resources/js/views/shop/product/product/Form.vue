@@ -160,7 +160,7 @@
       </el-form-item>
 
       <el-form-item :label="fields.is_published" prop="is_published">
-        <el-switch v-model="postForm.is_published" active-color="#13ce66" inactive-color="#ff4949" />
+        <el-switch v-model="postForm.is_published" active-color="#13ce66" inactive-color="#dcdfe6" />
       </el-form-item>
 
       <el-form-item>
